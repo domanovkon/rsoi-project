@@ -1,0 +1,9 @@
+CREATE TABLE museum
+(
+    id      SERIAL PRIMARY KEY,
+    museum_uid    uuid UNIQUE NOT NULL,
+    name    VARCHAR(255) NOT NULL,
+    city    VARCHAR(255) NOT NULL,
+    country VARCHAR(255) NOT NULL,
+    description VARCHAR(1000)
+);

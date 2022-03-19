@@ -1,0 +1,36 @@
+name: Course Project
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+jobs:
+  build:
+    name: Autograding
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+      - name: Build GatewayService
+        run: mvn --batch-mode --update-snapshots verify -f GatewayService
+
+#      - name: Build TicketService
+#        run: mvn --batch-mode --update-snapshots verify -f TicketService
+
+      - name: Build MuseumService
+        run: mvn --batch-mode --update-snapshots verify -f MuseumService
+
+#      - name: Build SessionService
+#        run: mvn --batch-mode --update-snapshots verify -f SessionService
+
+      - name: Sleep for 20s
+        uses: juliangruber/sleep-action@v1
+        with:
+          time: 20s

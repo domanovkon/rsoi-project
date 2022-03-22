@@ -24,8 +24,8 @@ jobs:
 #      - name: Build TicketService
 #        run: mvn --batch-mode --update-snapshots verify -f TicketService
 
-      - name: Build MuseumService
-        run: mvn --batch-mode --update-snapshots verify -f MuseumService
+#      - name: Build MuseumService
+#        run: mvn --batch-mode --update-snapshots verify -f MuseumService
 
 #      - name: Build SessionService
 #        run: mvn --batch-mode --update-snapshots verify -f SessionService

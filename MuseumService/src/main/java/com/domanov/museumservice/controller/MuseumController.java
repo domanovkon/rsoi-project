@@ -16,7 +16,7 @@ import java.util.List;
 public class MuseumController {
 
     @Autowired
-    MuseumService museumService;
+    private MuseumService museumService;
 
     @GetMapping("/museums")
     @CrossOrigin(origins = "*")

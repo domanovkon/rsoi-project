@@ -21,8 +21,8 @@ public class MuseumService {
         MuseumsResponse museumsResponse = new MuseumsResponse();
         for (Museum museum : museumList) {
             museumsResponse.setName(museum.getName());
-            museumsResponse.setCity(museum.getCity());
-            museumsResponse.setCountry(museum.getCountry());
+//            museumsResponse.setCity(museum.getCity());
+//            museumsResponse.setCountry(museum.getCountry());
             museumsResponse.setDescription(museum.getDescription());
             museumsResponseList.add(museumsResponse);
         }

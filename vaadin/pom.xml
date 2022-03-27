@@ -61,6 +61,7 @@
                 <version>${project.parent.version}</version>
             </plugin>
         </plugins>
+        <finalName>spring-boot-docker-vaadin</finalName>
     </build>
 
 </project>

@@ -1,13 +1,10 @@
 package com.domanov.gatewayservice.service;
 
 import com.domanov.gatewayservice.dto.UserResponse;
-import com.fasterxml.jackson.core.type.TypeReference;
+import com.domanov.gatewayservice.utils.JwtTokenUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -21,6 +18,9 @@ import java.util.UUID;
 
 @Service("GatewayService")
 public class GatewayService {
+
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
 
     private static final String AUTH = "http://localhost:8084/api/v1/authenticate";
 
@@ -45,5 +45,15 @@ public class GatewayService {
         userResponse.setTelephoneNumber(jsonNode.get("telephoneNumber").asText());
         userResponse.setUser_uid(UUID.fromString(jsonNode.get("user_uid").asText()));
         return userResponse;
+    }
+
+    public Object getAllMuseums(String jwt) {
+        String login = jwtTokenUtil.getUsernameFromToken(jwt);
+        if (login != null && jwtTokenUtil.validateToken(jwt, login)) {
+            System.out.println("123");
+        } else {
+            System.out.println("456");
+        }
+        return true;
     }
 }

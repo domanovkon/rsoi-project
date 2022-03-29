@@ -1,5 +1,6 @@
 package com.domanov.sessionservice.controller;
 
+import com.domanov.sessionservice.dto.AuthResponse;
 import com.domanov.sessionservice.dto.UserResponse;
 import com.domanov.sessionservice.service.SessionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,7 @@ public class SessionController {
 
     @GetMapping("/authenticate")
     @CrossOrigin(origins = "*")
-    public UserResponse getUser(@RequestParam("username") String username, @RequestParam("password") String password) {
-        return sessionService.getUser(username, password);
+    public AuthResponse getAuth(@RequestParam("username") String username, @RequestParam("password") String password) {
+        return sessionService.getAuth(username, password);
     }
 }

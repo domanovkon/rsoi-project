@@ -1,6 +1,7 @@
 package com.domanov.vaadin.view.login;
 
 import com.domanov.vaadin.VaadinApplication;
+import com.domanov.vaadin.dto.AuthResponse;
 import com.domanov.vaadin.dto.UserResponse;
 import com.domanov.vaadin.service.VaadinService;
 import com.domanov.vaadin.view.MainLayout;
@@ -39,8 +40,8 @@ public class LoginView extends VerticalLayout {
                 password,
                 new Button("Войти", event -> {
                     try {
-                        Object user = vaadinService.authenticate(username.getValue(), password.getValue());
-                        if (user instanceof UserResponse) {
+                        Object authenticate = vaadinService.authenticate(username.getValue(), password.getValue());
+                        if (authenticate instanceof AuthResponse) {
                             UI.getCurrent().navigate("");
                         } else {
                             Notification.show("Неверный логин или пароль!");

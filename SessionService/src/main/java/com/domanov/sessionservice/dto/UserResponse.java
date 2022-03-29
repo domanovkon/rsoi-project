@@ -1,6 +1,7 @@
 package com.domanov.sessionservice.dto;
 
 import com.domanov.sessionservice.model.Role;
+import io.jsonwebtoken.Jwt;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -21,6 +22,8 @@ public class UserResponse {
     private String login;
 
     private String role;
+
+    private String jwt;
 
     public Integer getId() {
         return id;
@@ -76,5 +79,13 @@ public class UserResponse {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public String getJwt() {
+        return jwt;
+    }
+
+    public void setJwt(String jwt) {
+        this.jwt = jwt;
     }
 }

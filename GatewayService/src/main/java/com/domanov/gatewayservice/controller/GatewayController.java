@@ -20,4 +20,11 @@ public class GatewayController {
     public UserResponse getUser(@RequestParam("username") String username, @RequestParam("password") String password) throws IOException, InterruptedException {
         return gatewayService.getUser(username, password);
     }
+
+    @GetMapping("/museums")
+    @CrossOrigin(origins = "*")
+    public Object getAllMuseums(@RequestHeader("jwt") String jwt) throws IOException, InterruptedException {
+        return gatewayService.getAllMuseums(jwt);
+    }
+
 }

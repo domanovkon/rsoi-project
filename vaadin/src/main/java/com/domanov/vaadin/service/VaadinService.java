@@ -68,7 +68,7 @@ public class VaadinService {
         Cookie[] cookies = VaadinRequest.getCurrent().getCookies();
         for (Cookie cookie : cookies) {
             if (cookie.getName().equals("jwt")) {
-                jwt = cookie.getValue();
+                jwt = "Bearer " + cookie.getValue();
             }
         }
         HttpClient httpClient = HttpClient.newHttpClient();

@@ -50,6 +50,7 @@ public class GatewayService {
     }
 
     public Object getAllMuseums(String jwt) {
+        jwt = jwt.substring(7);
         String login = jwtTokenUtil.getUsernameFromToken(jwt);
         if (login != null && jwtTokenUtil.validateToken(jwt, login)) {
             museumClient.getMuseums();

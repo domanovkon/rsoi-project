@@ -17,8 +17,6 @@ public class UserResponse {
 
     private String surname;
 
-    private String telephoneNumber;
-
     private String login;
 
     private String role;
@@ -55,14 +53,6 @@ public class UserResponse {
 
     public void setSurname(String surname) {
         this.surname = surname;
-    }
-
-    public String getTelephoneNumber() {
-        return telephoneNumber;
-    }
-
-    public void setTelephoneNumber(String telephoneNumber) {
-        telephoneNumber = telephoneNumber;
     }
 
     public String getLogin() {

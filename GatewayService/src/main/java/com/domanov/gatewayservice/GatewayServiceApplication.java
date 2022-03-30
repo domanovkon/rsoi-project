@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import java.util.Collections;
 
 @SpringBootApplication
+@EnableFeignClients
 public class GatewayServiceApplication {
 
     public static void main(String[] args) {

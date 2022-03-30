@@ -1,23 +1,24 @@
 package com.domanov.vaadin.service;
 
 import com.domanov.vaadin.dto.AuthResponse;
+import com.domanov.vaadin.dto.RegistrationRequest;
 import com.domanov.vaadin.dto.UserResponse;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vaadin.flow.server.VaadinRequest;
 import com.vaadin.flow.server.VaadinResponse;
-import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.http.codec.ServerCodecConfigurer;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.print.attribute.standard.JobKOctets;
 import javax.servlet.http.Cookie;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.UUID;
 
 @Service("VaadinService")
 public class VaadinService {
@@ -25,6 +26,9 @@ public class VaadinService {
     private static final String AUTH = "http://localhost:8084/api/v1/authenticate";
 
     private static final String MUSEUM = "http://localhost:8080/api/v1/museums";
+
+    @Autowired
+    private SessionClient sessionClient;
 
     public Object authenticate(String username, String password) {
         try {
@@ -76,5 +80,19 @@ public class VaadinService {
                 .build();
         HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
         return null;
+    }
+
+    public Object registration(String login,String name,String surname,String password) {
+        try {
+            RegistrationRequest registrationRequest = new RegistrationRequest();
+            registrationRequest.setLogin(login);
+            registrationRequest.setName(name);
+            registrationRequest.setSurname(surname);
+            registrationRequest.setPassword(password);
+            sessionClient.registration(registrationRequest);
+            return true;
+        } catch (Exception e) {
+            return e;
+        }
     }
 }

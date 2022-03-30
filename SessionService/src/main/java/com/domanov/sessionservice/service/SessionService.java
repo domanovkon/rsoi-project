@@ -1,11 +1,13 @@
 package com.domanov.sessionservice.service;
 
 import com.domanov.sessionservice.dto.AuthResponse;
+import com.domanov.sessionservice.dto.RegistrationRequest;
 import com.domanov.sessionservice.dto.UserResponse;
 import com.domanov.sessionservice.model.User;
 import com.domanov.sessionservice.repository.UserRepository;
 import com.domanov.sessionservice.utils.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service("SessionService")
@@ -26,11 +28,20 @@ public class SessionService {
             userResponse.setSurname(user.getSurname());
             userResponse.setRole(user.getRole().toString());
             userResponse.setUser_uid(user.getUser_uid());
-            userResponse.setTelephoneNumber(user.getTelephoneNumber());
             AuthResponse authResponse = new AuthResponse();
             authResponse.setJwt(jwtTokenUtil.generateToken(userResponse));
             return authResponse;
         }
+        return new AuthResponse();
+    }
+
+    public AuthResponse registration(RegistrationRequest registrationRequest) {
+        registrationRequest.getLogin();
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String hashedPassword = passwordEncoder.encode(registrationRequest.getPassword());
+        boolean isPasswordMatches = passwordEncoder.matches(registrationRequest.getPassword(), hashedPassword);
+
+        boolean isPasswordMatches2 = passwordEncoder.matches("12355uu", hashedPassword);
         return new AuthResponse();
     }
 }

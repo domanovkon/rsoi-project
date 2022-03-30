@@ -22,6 +22,9 @@ public class GatewayService {
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
+    @Autowired
+    private MuseumClient museumClient;
+
     private static final String AUTH = "http://localhost:8084/api/v1/authenticate";
 
     public UserResponse getUser(String username, String password) throws IOException, InterruptedException {
@@ -42,7 +45,6 @@ public class GatewayService {
         userResponse.setName(jsonNode.get("name").asText());
         userResponse.setLogin(jsonNode.get("login").asText());
         userResponse.setRole(jsonNode.get("role").asText());
-        userResponse.setTelephoneNumber(jsonNode.get("telephoneNumber").asText());
         userResponse.setUser_uid(UUID.fromString(jsonNode.get("user_uid").asText()));
         return userResponse;
     }
@@ -50,6 +52,7 @@ public class GatewayService {
     public Object getAllMuseums(String jwt) {
         String login = jwtTokenUtil.getUsernameFromToken(jwt);
         if (login != null && jwtTokenUtil.validateToken(jwt, login)) {
+            museumClient.getMuseums();
             System.out.println("123");
         } else {
             System.out.println("456");

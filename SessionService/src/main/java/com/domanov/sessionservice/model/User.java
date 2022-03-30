@@ -24,10 +24,7 @@ public class User {
     @Column(name = "surname", length = 255, nullable = false)
     private String surname;
 
-    @Column(name = "telephone_number", length = 11, nullable = false)
-    private String TelephoneNumber;
-
-    @Column(name = "login", length = 255, nullable = false)
+    @Column(name = "login", length = 255, nullable = false, unique = true)
     private String login;
 
     @Column(name = "password", length = 255, nullable = false)
@@ -67,14 +64,6 @@ public class User {
 
     public void setSurname(String surname) {
         this.surname = surname;
-    }
-
-    public String getTelephoneNumber() {
-        return TelephoneNumber;
-    }
-
-    public void setTelephoneNumber(String telephoneNumber) {
-        TelephoneNumber = telephoneNumber;
     }
 
     public String getLogin() {

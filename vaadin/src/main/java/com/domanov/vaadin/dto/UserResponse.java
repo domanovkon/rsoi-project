@@ -1,8 +1,5 @@
 package com.domanov.vaadin.dto;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.util.UUID;
 
 public class UserResponse {
@@ -14,8 +11,6 @@ public class UserResponse {
     private String name;
 
     private String surname;
-
-    private String telephoneNumber;
 
     private String login;
 
@@ -51,14 +46,6 @@ public class UserResponse {
 
     public void setSurname(String surname) {
         this.surname = surname;
-    }
-
-    public String getTelephoneNumber() {
-        return telephoneNumber;
-    }
-
-    public void setTelephoneNumber(String telephoneNumber) {
-        telephoneNumber = telephoneNumber;
     }
 
     public String getLogin() {

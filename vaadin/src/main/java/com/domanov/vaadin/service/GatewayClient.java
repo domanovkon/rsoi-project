@@ -1,6 +1,7 @@
 package com.domanov.vaadin.service;
 
 import com.domanov.vaadin.dto.MuseumPageResponse;
+import com.domanov.vaadin.dto.UserResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -13,4 +14,7 @@ public interface GatewayClient {
 
     @RequestMapping(method = RequestMethod.GET, value = "/museums")
     ResponseEntity<MuseumPageResponse> getMuseums(@RequestHeader("jwt") String jwt, @RequestParam("page") int page, @RequestParam("size") int size);
+
+    @RequestMapping(method = RequestMethod.GET, value = "/user")
+    ResponseEntity<UserResponse> getUser(@RequestHeader("jwt") String jwt);
 }

@@ -31,19 +31,28 @@ public class MainLayout extends AppLayout {
         Button museumButton = new Button("Купить билет", museumIcon);
         museumButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
 
+        Icon userIcon = new Icon(VaadinIcon.USER);
+        Button userButton = new Button("Личный кабинет", userIcon);
+        userButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+
         RouterLink mainRouterLink = new RouterLink("", MainView.class);
         RouterLink contactRouterLink = new RouterLink("", ContactView.class);
         RouterLink museumRouterLink = new RouterLink("", MuseumView.class);
         RouterLink authRouterLink = new RouterLink("", LoginView.class);
+        RouterLink lkRouterLink = new RouterLink("", UserView.class);
 
         contactRouterLink.getElement().appendChild(contactButton.getElement());
         mainRouterLink.getElement().appendChild(mainButton.getElement());
         authRouterLink.getElement().appendChild(authButton.getElement());
         museumRouterLink.getElement().appendChild(museumButton.getElement());
+        lkRouterLink.getElement().appendChild(userButton.getElement());
+        lkRouterLink.getStyle().set("margin-left", "auto");
+        lkRouterLink.getStyle().set("padding", "15px");
         addToNavbar(mainRouterLink);
         addToNavbar(museumRouterLink);
         addToNavbar(contactRouterLink);
         addToNavbar(authRouterLink);
+        addToNavbar(lkRouterLink);
     }
 
 }

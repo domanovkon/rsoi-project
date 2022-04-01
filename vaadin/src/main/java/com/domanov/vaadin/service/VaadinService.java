@@ -3,8 +3,10 @@ package com.domanov.vaadin.service;
 import com.domanov.vaadin.dto.AuthResponse;
 import com.domanov.vaadin.dto.MuseumPageResponse;
 import com.domanov.vaadin.dto.RegistrationRequest;
+import com.domanov.vaadin.dto.UserResponse;
 import com.vaadin.flow.server.VaadinRequest;
 import com.vaadin.flow.server.VaadinResponse;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,8 +16,6 @@ import javax.servlet.http.Cookie;
 
 @Service("VaadinService")
 public class VaadinService {
-
-    private static final String MUSEUM = "http://localhost:8080/api/v1/museums";
 
     @Autowired
     private SessionClient sessionClient;
@@ -68,6 +68,14 @@ public class VaadinService {
     }
 
     public ResponseEntity<MuseumPageResponse> getMuseums() {
+        try {
+            return gatewayClient.getMuseums(getJWT(), 1, 10);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.SERVICE_UNAVAILABLE);
+        }
+    }
+
+    private String getJWT() {
         StringBuilder jwt = new StringBuilder("Bearer ");
         Cookie[] cookies = VaadinRequest.getCurrent().getCookies();
         for (Cookie cookie : cookies) {
@@ -75,10 +83,14 @@ public class VaadinService {
                 jwt.append(cookie.getValue());
             }
         }
+        return jwt.toString();
+    }
+
+    public ResponseEntity<UserResponse> getUser() {
         try {
-            return gatewayClient.getMuseums(jwt.toString(), 1, 10);
+            return gatewayClient.getUser(getJWT());
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.SERVICE_UNAVAILABLE);
+            return new ResponseEntity<>(new UserResponse(), HttpStatus.SERVICE_UNAVAILABLE);
         }
     }
 }

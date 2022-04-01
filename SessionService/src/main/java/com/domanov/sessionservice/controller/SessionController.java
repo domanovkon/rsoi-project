@@ -2,8 +2,10 @@ package com.domanov.sessionservice.controller;
 
 import com.domanov.sessionservice.dto.AuthResponse;
 import com.domanov.sessionservice.dto.RegistrationRequest;
+import com.domanov.sessionservice.dto.UserResponse;
 import com.domanov.sessionservice.service.SessionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,5 +33,15 @@ public class SessionController {
     @CrossOrigin(origins = "*")
     public ResponseEntity userCheck(@RequestParam("username") String username) {
         return sessionService.userCheck(username);
+    }
+
+    @GetMapping("/user")
+    @CrossOrigin(origins = "*")
+    public UserResponse getUser(@RequestParam("login") String login) {
+        UserResponse userResponse = sessionService.getUser(login);
+        if (userResponse != null) {
+            return userResponse;
+        }
+        return new UserResponse();
     }
 }

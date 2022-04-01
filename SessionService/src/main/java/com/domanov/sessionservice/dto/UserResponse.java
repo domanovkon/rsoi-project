@@ -1,10 +1,5 @@
 package com.domanov.sessionservice.dto;
 
-import com.domanov.sessionservice.model.Role;
-import io.jsonwebtoken.Jwt;
-import org.hibernate.annotations.GenericGenerator;
-
-import javax.persistence.*;
 import java.util.UUID;
 
 public class UserResponse {

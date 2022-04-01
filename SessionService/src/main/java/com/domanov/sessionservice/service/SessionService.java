@@ -63,4 +63,21 @@ public class SessionService {
         }
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
+
+    public UserResponse getUser(String login) {
+        User user = userRepository.findByUsername(login);
+        if (user != null) {
+            UserResponse userResponse = new UserResponse();
+            userResponse.setLogin(user.getLogin());
+            userResponse.setName(user.getName());
+            userResponse.setSurname(user.getSurname());
+            userResponse.setRole(user.getRole().toString());
+            userResponse.setUser_uid(user.getUser_uid());
+            userResponse.setId(user.getId());
+            return userResponse;
+        }
+        else {
+            return null;
+        }
+    }
 }

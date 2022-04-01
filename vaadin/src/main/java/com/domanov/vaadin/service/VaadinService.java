@@ -1,98 +1,84 @@
 package com.domanov.vaadin.service;
 
 import com.domanov.vaadin.dto.AuthResponse;
+import com.domanov.vaadin.dto.MuseumPageResponse;
 import com.domanov.vaadin.dto.RegistrationRequest;
-import com.domanov.vaadin.dto.UserResponse;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vaadin.flow.server.VaadinRequest;
 import com.vaadin.flow.server.VaadinResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.http.codec.ServerCodecConfigurer;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.Cookie;
-import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 
 @Service("VaadinService")
 public class VaadinService {
-
-    private static final String AUTH = "http://localhost:8084/api/v1/authenticate";
 
     private static final String MUSEUM = "http://localhost:8080/api/v1/museums";
 
     @Autowired
     private SessionClient sessionClient;
 
-    public Object authenticate(String username, String password) {
+    @Autowired
+    private GatewayClient gatewayClient;
+
+    public ResponseEntity<AuthResponse> authenticate(String username, String password) {
         try {
-            HttpClient httpClient = HttpClient.newHttpClient();
-            String usernameUriString = UriComponentsBuilder.fromUriString(AUTH).queryParam("username", username).toUriString();
-            String passwordUriString = UriComponentsBuilder.fromUriString(usernameUriString).queryParam("password", password).toUriString();
-            HttpRequest httpRequest = HttpRequest.newBuilder()
-                    .GET()
-                    .uri(URI.create(passwordUriString))
-                    .build();
-            HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-
-            ObjectMapper objectMapper1 = new ObjectMapper();
-            objectMapper1.findAndRegisterModules();
-            JsonNode jsonNode = objectMapper1.readTree(response.body());
-
-
-            AuthResponse authResponse = new AuthResponse();
-            authResponse.setJwt(jsonNode.get("jwt").asText());
-            if (!authResponse.getJwt().equals("null")) {
+            ResponseEntity<AuthResponse> response = sessionClient.authorization(username, password);
+            if (response.getStatusCode().equals(HttpStatus.OK)) {
+                AuthResponse authResponse = response.getBody();
                 Cookie myCookie = new Cookie("jwt", authResponse.getJwt());
-                myCookie.setMaxAge(10 * 60); // define after how many *seconds* the cookie should expire
-                myCookie.setPath("/"); // single slash means the cookie is set for your whole application.
+                myCookie.setMaxAge(10 * 60);
+                myCookie.setPath("/");
                 VaadinResponse.getCurrent().addCookie(myCookie);
-                return authResponse;
+                return response;
             } else {
-                return false;
+                return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
             }
-        }
-        catch (Exception e) {
-            return false;
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.SERVICE_UNAVAILABLE);
         }
     }
 
-    public Object getAllMuseums() throws IOException, InterruptedException {
-        String jwt = "";
-        Cookie[] cookies = VaadinRequest.getCurrent().getCookies();
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals("jwt")) {
-                jwt = "Bearer " + cookie.getValue();
-            }
-        }
-        HttpClient httpClient = HttpClient.newHttpClient();
-        HttpRequest httpRequest = HttpRequest.newBuilder()
-                .GET()
-                .header("Content-Type", "application/json")
-                .header("jwt", jwt)
-                .uri(URI.create(MUSEUM))
-                .build();
-        HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-        return null;
-    }
-
-    public Object registration(String login,String name,String surname,String password) {
+    public ResponseEntity<AuthResponse> registration(String login, String name, String surname, String password) {
         try {
             RegistrationRequest registrationRequest = new RegistrationRequest();
             registrationRequest.setLogin(login);
             registrationRequest.setName(name);
             registrationRequest.setSurname(surname);
             registrationRequest.setPassword(password);
-            sessionClient.registration(registrationRequest);
-            return true;
+            ResponseEntity<AuthResponse> response = sessionClient.registration(registrationRequest);
+            if (response.getStatusCode().equals(HttpStatus.CREATED)) {
+                AuthResponse authResponse = response.getBody();
+                Cookie myCookie = new Cookie("jwt", authResponse.getJwt());
+                myCookie.setMaxAge(10 * 60);
+                myCookie.setPath("/");
+                VaadinResponse.getCurrent().addCookie(myCookie);
+                return response;
+            }
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (Exception e) {
-            return e;
+            return new ResponseEntity<>(null, HttpStatus.SERVICE_UNAVAILABLE);
+        }
+    }
+
+    public ResponseEntity userCheck(String username) {
+        return sessionClient.userCheck(username);
+    }
+
+    public ResponseEntity<MuseumPageResponse> getMuseums() {
+        StringBuilder jwt = new StringBuilder("Bearer ");
+        Cookie[] cookies = VaadinRequest.getCurrent().getCookies();
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equals("jwt")) {
+                jwt.append(cookie.getValue());
+            }
+        }
+        try {
+            return gatewayClient.getMuseums(jwt.toString(), 1, 10);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.SERVICE_UNAVAILABLE);
         }
     }
 }

@@ -1,6 +1,5 @@
 package com.domanov.vaadin.view;
 
-import com.domanov.vaadin.service.VaadinService;
 import com.domanov.vaadin.view.login.LoginView;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.button.Button;
@@ -8,14 +7,8 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.router.RouterLink;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.io.IOException;
 
 public class MainLayout extends AppLayout {
-
-    @Autowired
-    private VaadinService vaadinService;
 
     public MainLayout() {
         createHeader();
@@ -30,18 +23,12 @@ public class MainLayout extends AppLayout {
         Button contactButton = new Button("Контакты", phoneIcon);
         contactButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
 
-        Icon authIcon = new Icon(VaadinIcon.USER);
+        Icon authIcon = new Icon (VaadinIcon.USER);
         Button authButton = new Button("Войти", authIcon);
         authButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
 
         Icon museumIcon = new Icon(VaadinIcon.INSTITUTION);
-        Button museumButton = new Button("Купить билет", museumIcon, buttonClickEvent -> {
-            try {
-                Object authenticate = vaadinService.getAllMuseums();
-            } catch (IOException | InterruptedException e) {
-                e.printStackTrace();
-            }
-        });
+        Button museumButton = new Button("Купить билет", museumIcon);
         museumButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
 
         RouterLink mainRouterLink = new RouterLink("", MainView.class);

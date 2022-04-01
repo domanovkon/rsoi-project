@@ -1,8 +1,6 @@
 package com.domanov.vaadin.view.login;
 
-import com.domanov.vaadin.VaadinApplication;
 import com.domanov.vaadin.dto.AuthResponse;
-import com.domanov.vaadin.dto.UserResponse;
 import com.domanov.vaadin.service.VaadinService;
 import com.domanov.vaadin.view.MainLayout;
 import com.domanov.vaadin.view.register.RegisterView;
@@ -18,8 +16,10 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
-@Route(value = "login", layout = MainLayout.class)
+@Route(value = "authorization")
 @PageTitle("Login")
 public class LoginView extends VerticalLayout {
 
@@ -39,15 +39,19 @@ public class LoginView extends VerticalLayout {
                 username,
                 password,
                 new Button("Войти", event -> {
-                    try {
-                        Object authenticate = vaadinService.authenticate(username.getValue(), password.getValue());
-                        if (authenticate instanceof AuthResponse) {
+                    if (username.getValue().isEmpty()) {
+                        Notification.show("Введите логин");
+                    } else if (password.getValue().isEmpty()) {
+                        Notification.show("Введите пароль");
+                    } else {
+                        ResponseEntity<AuthResponse> response = vaadinService.authenticate(username.getValue(), password.getValue());
+                        if (response.getStatusCode().equals(HttpStatus.OK)) {
                             UI.getCurrent().navigate("");
-                        } else {
+                        } else if (response.getStatusCode().equals(HttpStatus.NO_CONTENT)) {
                             Notification.show("Неверный логин или пароль!");
+                        } else {
+                            Notification.show("Сервис недоступен, попробуйте позже");
                         }
-                    } catch (Exception e) {
-                        e.printStackTrace();
                     }
                 }),
                 new RouterLink("Регистрация", RegisterView.class)

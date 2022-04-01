@@ -2,9 +2,9 @@ package com.domanov.sessionservice.controller;
 
 import com.domanov.sessionservice.dto.AuthResponse;
 import com.domanov.sessionservice.dto.RegistrationRequest;
-import com.domanov.sessionservice.dto.UserResponse;
 import com.domanov.sessionservice.service.SessionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,13 +17,19 @@ public class SessionController {
 
     @GetMapping("/authenticate")
     @CrossOrigin(origins = "*")
-    public AuthResponse getAuth(@RequestParam("username") String username, @RequestParam("password") String password) {
+    public ResponseEntity<AuthResponse> getAuth(@RequestParam("username") String username, @RequestParam("password") String password) {
         return sessionService.getAuth(username, password);
     }
 
     @PostMapping("/registration")
     @CrossOrigin(origins = "*")
-    public AuthResponse registration(@RequestBody RegistrationRequest registrationRequest) {
+    public ResponseEntity<AuthResponse> registration(@RequestBody RegistrationRequest registrationRequest) {
         return sessionService.registration(registrationRequest);
+    }
+
+    @GetMapping("/user-check")
+    @CrossOrigin(origins = "*")
+    public ResponseEntity userCheck(@RequestParam("username") String username) {
+        return sessionService.userCheck(username);
     }
 }

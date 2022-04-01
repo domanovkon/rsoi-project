@@ -1,8 +1,10 @@
 package com.domanov.gatewayservice.controller;
 
+import com.domanov.gatewayservice.dto.MuseumPageResponse;
 import com.domanov.gatewayservice.dto.UserResponse;
 import com.domanov.gatewayservice.service.GatewayService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -23,8 +25,8 @@ public class GatewayController {
 
     @GetMapping("/museums")
     @CrossOrigin(origins = "*")
-    public Object getAllMuseums(@RequestHeader("jwt") String jwt) throws IOException, InterruptedException {
-        return gatewayService.getAllMuseums(jwt);
+    public ResponseEntity<MuseumPageResponse> getMuseums(@RequestHeader("jwt") String jwt, @RequestParam("page") int page, @RequestParam("size") int size) {
+        return gatewayService.getMuseums(jwt, page, size);
     }
 
 }

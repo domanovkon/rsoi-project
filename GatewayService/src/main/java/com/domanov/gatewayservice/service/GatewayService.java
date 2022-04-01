@@ -1,10 +1,13 @@
 package com.domanov.gatewayservice.service;
 
+import com.domanov.gatewayservice.dto.MuseumPageResponse;
 import com.domanov.gatewayservice.dto.UserResponse;
 import com.domanov.gatewayservice.utils.JwtTokenUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -13,7 +16,6 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.List;
 import java.util.UUID;
 
 @Service("GatewayService")
@@ -49,15 +51,19 @@ public class GatewayService {
         return userResponse;
     }
 
-    public Object getAllMuseums(String jwt) {
-        jwt = jwt.substring(7);
-        String login = jwtTokenUtil.getUsernameFromToken(jwt);
-        if (login != null && jwtTokenUtil.validateToken(jwt, login)) {
-            museumClient.getMuseums();
-            System.out.println("123");
+    public ResponseEntity<MuseumPageResponse> getMuseums(String jwt, int page, int size) {
+        if (!jwt.equals("Bearer")) {
+            jwt = jwt.substring(7);
+            String login = jwtTokenUtil.getUsernameFromToken(jwt);
+            if (login != null && jwtTokenUtil.validateToken(jwt, login)) {
+                museumClient.getMuseums(page, size);
+                System.out.println("123");
+            } else {
+                System.out.println("456");
+            }
+            return new ResponseEntity<>(HttpStatus.OK);
         } else {
-            System.out.println("456");
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        return true;
     }
 }

@@ -2,6 +2,7 @@ package com.domanov.vaadin.view;
 
 import com.domanov.vaadin.dto.UserResponse;
 import com.domanov.vaadin.service.VaadinService;
+import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.details.Details;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -36,16 +37,20 @@ public class UserView extends VerticalLayout {
     @PostConstruct
     public void init() {
         setSizeFull();
-        setAlignItems(Alignment.STRETCH);
+        setAlignItems(Alignment.CENTER);
         ResponseEntity<UserResponse> response = vaadinService.getUser();
         UserResponse userResponse = new UserResponse();
         if (response.getStatusCode().equals(HttpStatus.OK)) {
             userResponse = response.getBody();
             add(new H3("Мой Профиль"));
-            H5 log = new H5(userResponse.getLogin());
+            Avatar avatar = new Avatar(userResponse.getName()+ " " + userResponse.getSurname());
+            avatar.setWidth("200px");
+            avatar.setHeight("200px");
             H5 name = new H5(userResponse.getName() + "  " + userResponse.getSurname());
-            add(log);
+            H5 log = new H5(userResponse.getLogin());
+            add(avatar);
             add(name);
+            add(log);
             add(new H3("История покупок"));
         } else {
             Notification.show("Что-то пошло не так");

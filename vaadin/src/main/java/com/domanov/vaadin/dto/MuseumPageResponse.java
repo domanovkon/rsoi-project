@@ -9,9 +9,8 @@ public class MuseumPageResponse {
 
     private int pageSize;
 
-    private long totalElements;
+    private int totalElements;
 
-    @JsonProperty(value = "items")
     private List<MuseumResponse> items;
 
     public int getPage() {
@@ -30,12 +29,11 @@ public class MuseumPageResponse {
         this.pageSize = pageSize;
     }
 
-    public long getTotalElements() {
+    public int getTotalElements() {
         return totalElements;
     }
 
-    @JsonProperty(value = "items")
-    public void setTotalElements(long totalElements) {
+    public void setTotalElements(int totalElements) {
         this.totalElements = totalElements;
     }
 

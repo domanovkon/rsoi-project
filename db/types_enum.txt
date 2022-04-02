@@ -1,7 +1,7 @@
 INSERT INTO museum_type(
 	id,
-    description,
-    type
+    type,
+    description
 )
 VALUES
     (

@@ -1,6 +1,4 @@
-package com.domanov.gatewayservice.dto;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
+package com.domanov.museumservice.dto;
 
 import java.util.List;
 
@@ -39,7 +37,7 @@ public class MuseumPageResponse {
         this.totalElements = totalElements;
     }
 
-    @JsonProperty(value = "items")
+//    @JsonProperty(value = "items")
     public List<MuseumResponse> getItems() {
         return items;
     }

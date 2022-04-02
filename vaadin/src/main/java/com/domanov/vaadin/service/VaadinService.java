@@ -67,9 +67,9 @@ public class VaadinService {
         return sessionClient.userCheck(username);
     }
 
-    public ResponseEntity<MuseumPageResponse> getMuseums() {
+    public ResponseEntity<MuseumPageResponse> getMuseums(int page, int size) {
         try {
-            return gatewayClient.getMuseums(getJWT(), 1, 10);
+            return gatewayClient.getMuseums(getJWT(), page, size);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.SERVICE_UNAVAILABLE);
         }

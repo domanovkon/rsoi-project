@@ -8,13 +8,11 @@ public class MuseumResponse {
 
     private String name;
 
-    private String city;
-
-    private String country;
-
     private String description;
 
     private String type;
+
+    private String city;
 
     private AddressResponse address;
 
@@ -34,22 +32,6 @@ public class MuseumResponse {
         this.name = name;
     }
 
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -64,6 +46,10 @@ public class MuseumResponse {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getCity() {
+        return city;
     }
 
     public AddressResponse getAddress() {

@@ -24,7 +24,8 @@ public class GatewayService {
     public ResponseEntity<MuseumPageResponse> getMuseums(String jwt, int page, int size) {
         try {
             if (validateToken(jwt) != null) {
-                return museumClient.getMuseums(page, size);
+//                MuseumPageResponse museumPageResponse = museumClient.getMuseums(page, size);
+                return new ResponseEntity<>(museumClient.getMuseums(page, size), HttpStatus.OK);
             } else {
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }

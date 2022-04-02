@@ -1,4 +1,4 @@
-package com.domanov.vaadin.dto;
+package com.domanov.museumservice.dto;
 
 import java.util.UUID;
 

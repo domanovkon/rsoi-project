@@ -3,9 +3,9 @@ package com.domanov.sessionservice.controller;
 import com.domanov.sessionservice.dto.AuthResponse;
 import com.domanov.sessionservice.dto.RegistrationRequest;
 import com.domanov.sessionservice.dto.UserResponse;
+import com.domanov.sessionservice.dto.ValidateToken;
 import com.domanov.sessionservice.service.SessionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,6 +33,12 @@ public class SessionController {
     @CrossOrigin(origins = "*")
     public ResponseEntity userCheck(@RequestParam("username") String username) {
         return sessionService.userCheck(username);
+    }
+
+    @GetMapping("/validate")
+    @CrossOrigin(origins = "*")
+    public ValidateToken validate(@RequestHeader("jwt") String jwt) {
+        return sessionService.validate(jwt);
     }
 
     @GetMapping("/user")

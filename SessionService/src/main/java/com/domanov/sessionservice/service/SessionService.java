@@ -3,6 +3,7 @@ package com.domanov.sessionservice.service;
 import com.domanov.sessionservice.dto.AuthResponse;
 import com.domanov.sessionservice.dto.RegistrationRequest;
 import com.domanov.sessionservice.dto.UserResponse;
+import com.domanov.sessionservice.dto.ValidateToken;
 import com.domanov.sessionservice.model.Role;
 import com.domanov.sessionservice.model.User;
 import com.domanov.sessionservice.repository.UserRepository;
@@ -62,6 +63,21 @@ public class SessionService {
             return new ResponseEntity(HttpStatus.OK);
         }
         return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+
+    public ValidateToken validate(String jwt) {
+        ValidateToken validateToken = new ValidateToken();
+        try {
+            jwt = jwt.substring(7);
+            String login = jwtTokenUtil.getUsernameFromToken(jwt);
+            if (jwtTokenUtil.validateToken(jwt, login)) {
+                validateToken.setLogin(login);
+                return validateToken;
+            }
+            return new ValidateToken();
+        } catch (Exception e) {
+            return new ValidateToken();
+        }
     }
 
     public UserResponse getUser(String login) {

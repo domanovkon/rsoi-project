@@ -6,7 +6,6 @@ import com.domanov.vaadin.dto.RegistrationRequest;
 import com.domanov.vaadin.dto.UserResponse;
 import com.vaadin.flow.server.VaadinRequest;
 import com.vaadin.flow.server.VaadinResponse;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -5,7 +5,9 @@ import com.domanov.vaadin.dto.MuseumResponse;
 import com.domanov.vaadin.service.VaadinService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.H5;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -23,7 +25,9 @@ public class MuseumView extends VerticalLayout {
     private VaadinService vaadinService;
 
     private int totalAmountOfPages;
-    private int itemsPerPage = 10;
+
+    private int itemsPerPage = 5;
+
     private int currentPageNumber = 1;
 
     public MuseumView() {
@@ -31,21 +35,18 @@ public class MuseumView extends VerticalLayout {
 
     @PostConstruct
     public void init() {
-//        try {
-//            ResponseEntity<MuseumPageResponse> museums = vaadinService.getMuseums();
-//            museums.getBody();
-//        } catch (Exception e) {
-//            Notification.show("Что-то пошло не так");
-//        }
-//        MuseumGridView museumGridView = new MuseumGridView();
-//        add(museumGridView);
         Grid<MuseumResponse> grid = new Grid<>();
         try {
-            this.getStyle().set("padding", "0")
-            .set("padding-top", "16px");
+            this.getStyle().set("padding", "0");
             ResponseEntity<MuseumPageResponse> museums = vaadinService.getMuseums(currentPageNumber, itemsPerPage);
             totalAmountOfPages = museums.getBody().getTotalElements();
             List<MuseumResponse> initialItems = museums.getBody().getItems();
+            Integer totalAmountOfItems = museums.getBody().getTotalElements();
+            if (totalAmountOfItems % itemsPerPage == 0) {
+                totalAmountOfPages = totalAmountOfItems / itemsPerPage;
+            } else {
+                totalAmountOfPages = totalAmountOfItems / itemsPerPage + 1;
+            }
             grid.addColumn(MuseumResponse::getName).setHeader("Название").setWidth("200px");
             grid.addColumn(MuseumResponse::getType).setHeader("Тип").setWidth("200px");
             grid.addColumn(MuseumResponse::getCity).setHeader("Город").setWidth("200px");
@@ -54,25 +55,32 @@ public class MuseumView extends VerticalLayout {
             grid.setWidthFull();
             grid.getStyle().set("margin", "0");
             grid.setHeightByRows(true);
+            H5 currPage = new H5(String.valueOf(currentPageNumber));
+            currPage.getStyle().set("margin-top", "0.8em");
             grid.setItems(initialItems);
-//            Button nextButton = new Button("Следующая страница", e -> {
-//                if (currentPageNumber >= totalAmountOfPages) {
-//                    return;
-//                }
-//                ResponseEntity<MuseumPageResponse> museumsNext = vaadinService.getMuseums(++currentPageNumber, itemsPerPage);
-//                List<MuseumResponse> nextPageItems = museumsNext.getBody().getItems();
-//                grid.setItems(nextPageItems);
-//            });
-//            Button previousButton = new Button("Предыдущая страница", e -> {
-//                if (currentPageNumber <= 1) {
-//                    return;
-//                }
-//                ResponseEntity<MuseumPageResponse> museumsNext = vaadinService.getMuseums(--currentPageNumber, itemsPerPage);
-//                List<MuseumResponse> prevPageItems = museumsNext.getBody().getItems();
-//                List<Bean> prevPageItems = RestApi.getPageItems(--currentPageNumber, totalAmountOfPages, itemsPerPage);
-//                grid.setItems(prevPageItems);
-//            });
-            add(grid);
+            Button previousButton = new Button("Предыдущая страница", e -> {
+                if (currentPageNumber <= 1) {
+                    setEnabled(false);
+                    return;
+                }
+                ResponseEntity<MuseumPageResponse> museumsNext = vaadinService.getMuseums(--currentPageNumber, itemsPerPage);
+                List<MuseumResponse> prevPageItems = museumsNext.getBody().getItems();
+                grid.setItems(prevPageItems);
+                currPage.setText(String.valueOf(currentPageNumber));
+            });
+            Button nextButton = new Button("Следующая страница", e -> {
+                if (currentPageNumber >= totalAmountOfPages) {
+                    return;
+                }
+                ResponseEntity<MuseumPageResponse> museumsNext = vaadinService.getMuseums(++currentPageNumber, itemsPerPage);
+                List<MuseumResponse> nextPageItems = museumsNext.getBody().getItems();
+                grid.setItems(nextPageItems);
+                currPage.setText(String.valueOf(currentPageNumber));
+            });
+            HorizontalLayout horizontalLayout = new HorizontalLayout();
+            horizontalLayout.add(previousButton, currPage, nextButton);
+            horizontalLayout.getStyle().set("margin-left", "16px");
+            add(grid, horizontalLayout);
 
         } catch (Exception e) {
             Notification.show("Что-то пошло не так");

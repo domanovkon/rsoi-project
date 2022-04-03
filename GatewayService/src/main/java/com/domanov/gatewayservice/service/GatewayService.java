@@ -22,7 +22,6 @@ public class GatewayService {
         try {
             ValidateToken validateToken = sessionClient.validate(jwt);
             if (validateToken.getLogin() != null) {
-//                MuseumPageResponse museumPageResponse = museumClient.getMuseums(page, size);
                 return new ResponseEntity<>(museumClient.getMuseums(page, size), HttpStatus.OK);
             } else {
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);

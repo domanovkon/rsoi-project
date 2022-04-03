@@ -47,10 +47,10 @@ public class UserView extends VerticalLayout {
             avatar.setWidth("200px");
             avatar.setHeight("200px");
             H5 name = new H5(userResponse.getName() + "  " + userResponse.getSurname());
-            H5 log = new H5(userResponse.getLogin());
+            H4 log = new H4(userResponse.getLogin());
+            add(log);
             add(avatar);
             add(name);
-            add(log);
             add(new H3("История покупок"));
         } else {
             Notification.show("Что-то пошло не так");

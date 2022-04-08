@@ -3,6 +3,7 @@ package com.domanov.vaadin.view;
 import com.domanov.vaadin.dto.MuseumPageResponse;
 import com.domanov.vaadin.dto.MuseumResponse;
 import com.domanov.vaadin.service.VaadinService;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H5;
@@ -80,6 +81,9 @@ public class MuseumView extends VerticalLayout {
             HorizontalLayout horizontalLayout = new HorizontalLayout();
             horizontalLayout.add(previousButton, currPage, nextButton);
             horizontalLayout.getStyle().set("margin-left", "16px");
+            grid.addItemClickListener(item -> {
+                UI.getCurrent().navigate("museum/" + item.getItem().getMuseum_uid());
+            });
             add(grid, horizontalLayout);
 
         } catch (Exception e) {

@@ -1,9 +1,6 @@
 package com.domanov.vaadin.service;
 
-import com.domanov.vaadin.dto.AuthResponse;
-import com.domanov.vaadin.dto.MuseumPageResponse;
-import com.domanov.vaadin.dto.RegistrationRequest;
-import com.domanov.vaadin.dto.UserResponse;
+import com.domanov.vaadin.dto.*;
 import com.vaadin.flow.server.VaadinRequest;
 import com.vaadin.flow.server.VaadinResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,6 +87,14 @@ public class VaadinService {
             return gatewayClient.getUser(getJWT());
         } catch (Exception e) {
             return new ResponseEntity<>(new UserResponse(), HttpStatus.SERVICE_UNAVAILABLE);
+        }
+    }
+
+    public ResponseEntity<MuseumInfoResponse> getMuseumInfo(String museum_uid) {
+        try {
+            return gatewayClient.getMuseumInfo(getJWT(), museum_uid);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new MuseumInfoResponse(), HttpStatus.SERVICE_UNAVAILABLE);
         }
     }
 }

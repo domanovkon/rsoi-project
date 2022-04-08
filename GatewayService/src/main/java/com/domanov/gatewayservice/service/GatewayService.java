@@ -1,5 +1,6 @@
 package com.domanov.gatewayservice.service;
 
+import com.domanov.gatewayservice.dto.MuseumInfoResponse;
 import com.domanov.gatewayservice.dto.MuseumPageResponse;
 import com.domanov.gatewayservice.dto.UserResponse;
 import com.domanov.gatewayservice.dto.ValidateToken;
@@ -41,6 +42,19 @@ public class GatewayService {
             }
         } catch (Exception e) {
             return new ResponseEntity<>(new UserResponse(), HttpStatus.SERVICE_UNAVAILABLE);
+        }
+    }
+
+    public ResponseEntity<MuseumInfoResponse> getMuseumInfo(String jwt, String uid) {
+        try {
+            ValidateToken validateToken = sessionClient.validate(jwt);
+            if (validateToken.getLogin() != null) {
+                return new ResponseEntity<>(museumClient.getMuseumInfo(uid), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(new MuseumInfoResponse(), HttpStatus.UNAUTHORIZED);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(new MuseumInfoResponse(), HttpStatus.SERVICE_UNAVAILABLE);
         }
     }
 }

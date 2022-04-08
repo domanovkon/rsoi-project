@@ -1,5 +1,6 @@
 package com.domanov.gatewayservice.service;
 
+import com.domanov.gatewayservice.dto.MuseumInfoResponse;
 import com.domanov.gatewayservice.dto.MuseumPageResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,5 +12,8 @@ public interface MuseumClient {
 
     @RequestMapping(method = RequestMethod.GET, value = "/museums")
     MuseumPageResponse getMuseums(@RequestParam("page") int page, @RequestParam("size") int size);
+
+    @RequestMapping(method = RequestMethod.GET, value = "/museum")
+    MuseumInfoResponse getMuseumInfo(@RequestParam("uid") String uid);
 
 }

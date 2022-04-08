@@ -1,6 +1,7 @@
 package com.domanov.museumservice.service;
 
 import com.domanov.museumservice.dto.AddressResponse;
+import com.domanov.museumservice.dto.MuseumInfoResponse;
 import com.domanov.museumservice.dto.MuseumPageResponse;
 import com.domanov.museumservice.dto.MuseumResponse;
 import com.domanov.museumservice.model.Museum;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service("MuseumService")
 public class MuseumService {
@@ -45,5 +47,24 @@ public class MuseumService {
         }
         museumPageResponse.setItems(museumResponseList);
         return museumPageResponse;
+    }
+
+    public MuseumInfoResponse getMuseumInfo (String uid) {
+        Museum museum = museumRepository.findByUid(UUID.fromString(uid));
+        MuseumInfoResponse museumInfoResponse = new MuseumInfoResponse();
+        museumInfoResponse.setMuseum_uid(museum.getMuseum_uid().toString());
+        museumInfoResponse.setName(museum.getName());
+        museumInfoResponse.setDescription(museum.getDescription());
+        museumInfoResponse.setInn(museum.getInn());
+        museumInfoResponse.setType(museum.getMuseumType().getType());
+        museumInfoResponse.setEmail(museum.getEmail());
+        museumInfoResponse.setLegalEntityName(museum.getLegalEntityName());
+        museumInfoResponse.setOgrn(museum.getOgrn());
+        AddressResponse addressResponse = new AddressResponse();
+        addressResponse.setCity(museum.getAddress().getCity());
+        addressResponse.setHouse(museum.getAddress().getHouse());
+        addressResponse.setStreet(museum.getAddress().getStreet());
+        museumInfoResponse.setAddress(addressResponse);
+        return museumInfoResponse;
     }
 }

@@ -1,5 +1,6 @@
 package com.domanov.vaadin.service;
 
+import com.domanov.vaadin.dto.MuseumInfoResponse;
 import com.domanov.vaadin.dto.MuseumPageResponse;
 import com.domanov.vaadin.dto.UserResponse;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -17,4 +18,7 @@ public interface GatewayClient {
 
     @RequestMapping(method = RequestMethod.GET, value = "/user")
     ResponseEntity<UserResponse> getUser(@RequestHeader("jwt") String jwt);
+
+    @RequestMapping(method = RequestMethod.GET, value = "/museum")
+    ResponseEntity<MuseumInfoResponse> getMuseumInfo(@RequestHeader("jwt") String jwt, @RequestParam("uid") String museum_uid);
 }

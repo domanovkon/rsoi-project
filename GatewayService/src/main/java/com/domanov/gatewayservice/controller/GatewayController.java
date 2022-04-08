@@ -1,5 +1,6 @@
 package com.domanov.gatewayservice.controller;
 
+import com.domanov.gatewayservice.dto.MuseumInfoResponse;
 import com.domanov.gatewayservice.dto.MuseumPageResponse;
 import com.domanov.gatewayservice.dto.UserResponse;
 import com.domanov.gatewayservice.service.GatewayService;
@@ -24,5 +25,10 @@ public class GatewayController {
     @GetMapping("/user")
     public ResponseEntity<UserResponse> getUser(@RequestHeader("jwt") String jwt) {
         return gatewayService.getUser(jwt);
+    }
+
+    @GetMapping("/museum")
+    public ResponseEntity<MuseumInfoResponse> getMuseumInfo(@RequestHeader("jwt") String jwt, @RequestParam("uid") String uid) {
+        return gatewayService.getMuseumInfo(jwt, uid);
     }
 }

@@ -1,6 +1,7 @@
 package com.domanov.vaadin.view;
 
 import com.domanov.vaadin.dto.MuseumInfoResponse;
+import com.domanov.vaadin.dto.ShowResponse;
 import com.domanov.vaadin.service.VaadinService;
 import com.vaadin.flow.component.details.Details;
 import com.vaadin.flow.component.html.H3;
@@ -8,10 +9,13 @@ import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.virtuallist.VirtualList;
 import com.vaadin.flow.router.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
+import java.util.List;
 
 @Route(value = "museum", layout = MainLayout.class)
 @PageTitle("Музей")
@@ -35,6 +39,7 @@ public class MuseumInfoView extends VerticalLayout implements HasUrlParameter<St
             ResponseEntity<MuseumInfoResponse> response = vaadinService.getMuseumInfo(this.getMuseum_uid());
             if (response.getStatusCode().equals(HttpStatus.OK)) {
                 MuseumInfoResponse museum = response.getBody();
+                List<ShowResponse> shows = response.getBody().getShows();
                 H3 name = new H3(museum.getName());
                 name.getStyle().set("padding-left", "32px").set("margin-top", "10px");
 
@@ -46,6 +51,10 @@ public class MuseumInfoView extends VerticalLayout implements HasUrlParameter<St
 
                 Span type = new Span("Тип музея: " + museum.getType().toLowerCase());
                 type.getStyle().set("padding-left", "32px").set("margin-top", "-16px");
+
+
+                VirtualList<ShowResponse> showList = new VirtualList<>();
+                showList.setItems(shows);
 
 
                 VerticalLayout contacts = new VerticalLayout(email, address);
@@ -68,7 +77,7 @@ public class MuseumInfoView extends VerticalLayout implements HasUrlParameter<St
                 infoDetails.setOpened(false);
                 infoDetails.getStyle().set("padding-left", "32px").set("margin-top", "-16px");
 
-                add(name, paragraph, type, contactDetails, infoDetails);
+                add(name, paragraph, type, showList, contactDetails, infoDetails);
             }
         } catch (Exception e) {
             Notification.show("Что-то пошло не так");

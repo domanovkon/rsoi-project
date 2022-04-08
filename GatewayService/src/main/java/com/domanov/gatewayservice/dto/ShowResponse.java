@@ -1,4 +1,4 @@
-package com.domanov.vaadin.dto;
+package com.domanov.gatewayservice.dto;
 
 import java.time.LocalDateTime;
 

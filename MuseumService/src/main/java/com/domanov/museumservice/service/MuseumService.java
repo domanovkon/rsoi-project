@@ -1,11 +1,10 @@
 package com.domanov.museumservice.service;
 
-import com.domanov.museumservice.dto.AddressResponse;
-import com.domanov.museumservice.dto.MuseumInfoResponse;
-import com.domanov.museumservice.dto.MuseumPageResponse;
-import com.domanov.museumservice.dto.MuseumResponse;
+import com.domanov.museumservice.dto.*;
 import com.domanov.museumservice.model.Museum;
+import com.domanov.museumservice.model.Show;
 import com.domanov.museumservice.repository.MuseumRepository;
+import com.domanov.museumservice.repository.ShowRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,7 +19,10 @@ import java.util.UUID;
 public class MuseumService {
 
     @Autowired
-    MuseumRepository museumRepository;
+    private MuseumRepository museumRepository;
+
+    @Autowired
+    private ShowRepository showRepository;
 
     public MuseumPageResponse getMuseums (int page, int size) {
         Pageable pageable = PageRequest.of(page - 1, size);
@@ -51,6 +53,7 @@ public class MuseumService {
 
     public MuseumInfoResponse getMuseumInfo (String uid) {
         Museum museum = museumRepository.findByUid(UUID.fromString(uid));
+        List<Show> shows = showRepository.findAllShowInMuseum(museum);
         MuseumInfoResponse museumInfoResponse = new MuseumInfoResponse();
         museumInfoResponse.setMuseum_uid(museum.getMuseum_uid().toString());
         museumInfoResponse.setName(museum.getName());
@@ -65,6 +68,19 @@ public class MuseumService {
         addressResponse.setHouse(museum.getAddress().getHouse());
         addressResponse.setStreet(museum.getAddress().getStreet());
         museumInfoResponse.setAddress(addressResponse);
+        List<ShowResponse> showResponses = new ArrayList<>();
+        for (Show show : shows) {
+            ShowResponse showResponse = new ShowResponse();
+            showResponse.setName(show.getName());
+            showResponse.setDescription(show.getDescription());
+            showResponse.setShow_uid(show.getShow_uid().toString());
+            showResponse.setEndDate(show.getEndDate());
+            showResponse.setStartDate(show.getStartDate());
+            showResponse.setPermanentExhibition(show.getPermanentExhibition());
+            showResponse.setPrice(show.getPrice());
+            showResponses.add(showResponse);
+        }
+        museumInfoResponse.setShows(showResponses);
         return museumInfoResponse;
     }
 }

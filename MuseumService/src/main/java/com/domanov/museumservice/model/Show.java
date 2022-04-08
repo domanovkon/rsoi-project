@@ -38,6 +38,9 @@ public class Show {
     @Column(name = "permanent_exhibition", columnDefinition = "boolean default false")
     private Boolean permanentExhibition;
 
+    @Column(columnDefinition = "integer default 0", nullable = false)
+    private Integer price;
+
     public Integer getId() {
         return id;
     }
@@ -100,5 +103,13 @@ public class Show {
 
     public void setPermanentExhibition(Boolean permanentExhibition) {
         this.permanentExhibition = permanentExhibition;
+    }
+
+    public Integer getPrice() {
+        return price;
+    }
+
+    public void setPrice(Integer price) {
+        this.price = price;
     }
 }

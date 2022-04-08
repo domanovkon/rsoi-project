@@ -1,5 +1,7 @@
 package com.domanov.museumservice.dto;
 
+import java.util.List;
+
 public class MuseumInfoResponse {
 
     private String museum_uid;
@@ -19,6 +21,8 @@ public class MuseumInfoResponse {
     private String ogrn;
 
     private String email;
+
+    private List<ShowResponse> shows;
 
     public String getMuseum_uid() {
         return museum_uid;
@@ -90,5 +94,13 @@ public class MuseumInfoResponse {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public List<ShowResponse> getShows() {
+        return shows;
+    }
+
+    public void setShows(List<ShowResponse> shows) {
+        this.shows = shows;
     }
 }

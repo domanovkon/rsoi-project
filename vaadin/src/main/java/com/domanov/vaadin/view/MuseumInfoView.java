@@ -3,19 +3,29 @@ package com.domanov.vaadin.view;
 import com.domanov.vaadin.dto.MuseumInfoResponse;
 import com.domanov.vaadin.dto.ShowResponse;
 import com.domanov.vaadin.service.VaadinService;
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.Text;
+import com.vaadin.flow.component.avatar.Avatar;
+import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.details.Details;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.virtuallist.VirtualList;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
+import com.vaadin.flow.dom.ElementFactory;
 import com.vaadin.flow.router.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 
 @Route(value = "museum", layout = MainLayout.class)
 @PageTitle("Музей")
@@ -55,7 +65,10 @@ public class MuseumInfoView extends VerticalLayout implements HasUrlParameter<St
 
                 VirtualList<ShowResponse> showList = new VirtualList<>();
                 showList.setItems(shows);
-
+                showList.setRenderer(showCardRenderer);
+                showList.getStyle().set("padding-left", "32px");
+//                showList.getStyle().set("height", "100%");
+//                showList.setHeight("300px");
 
                 VerticalLayout contacts = new VerticalLayout(email, address);
                 contacts.setSpacing(false);
@@ -83,6 +96,46 @@ public class MuseumInfoView extends VerticalLayout implements HasUrlParameter<St
             Notification.show("Что-то пошло не так");
         }
     }
+
+    private ComponentRenderer<Component, ShowResponse> showCardRenderer = new ComponentRenderer<>(showResponse -> {
+        HorizontalLayout cardLayout = new HorizontalLayout();
+        cardLayout.setMargin(true);
+
+        String avtTxt = "Временная";
+        if (showResponse.getPermanentExhibition()) {
+            avtTxt = "Постоянная";
+        }
+        Avatar avatar = new Avatar(avtTxt);
+        avatar.setHeight("64px");
+        avatar.setWidth("64px");
+        avatar.setColorIndex(1);
+
+        VerticalLayout infoLayout = new VerticalLayout();
+        infoLayout.setSpacing(false);
+        infoLayout.setPadding(false);
+        infoLayout.getElement().appendChild(ElementFactory.createStrong(showResponse.getName()));
+        infoLayout.add(new Div(new Text(showResponse.getDescription())));
+        infoLayout.add(new Div(new Text("Цена: " + showResponse.getPrice().toString() + "₽")));
+
+        if (!showResponse.getPermanentExhibition()) {
+            avatar.setColorIndex(0);
+            VerticalLayout contactLayout = new VerticalLayout();
+            contactLayout.setSpacing(false);
+            contactLayout.setPadding(false);
+            String start = DateTimeFormatter.ofPattern("d MMMM yyyy")
+                            .withLocale(new Locale("ru"))
+                            .format((showResponse.getStartDate().toLocalDate()));
+            String end = DateTimeFormatter.ofPattern("d MMMM yyyy")
+                            .withLocale(new Locale("ru"))
+                            .format((showResponse.getEndDate().toLocalDate()));
+            contactLayout.add(new Div(new Text("Начало: " + start)));
+            contactLayout.add(new Div(new Text("Окончание: " + end)));
+            infoLayout.add(new Details("Дата проведения", contactLayout));
+        }
+
+        cardLayout.add(avatar, infoLayout);
+        return cardLayout;
+    });
 
     public String getMuseum_uid() {
         return museum_uid;

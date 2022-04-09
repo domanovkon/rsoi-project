@@ -7,8 +7,8 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "purchase_history", schema = "public")
-public class PurchaseHistory {
+@Table(name = "money_transfer", schema = "public")
+public class MoneyTransfer {
 
     @Id
     @GeneratedValue
@@ -16,19 +16,19 @@ public class PurchaseHistory {
 
     @GenericGenerator(name = "UUIDGenerator", strategy = "uuid2")
     @GeneratedValue(generator = "UUIDGenerator")
-    @Column(name = "user_uid", nullable = false, unique = true)
-    private UUID user_uid;
-
-    @GenericGenerator(name = "UUIDGenerator", strategy = "uuid2")
-    @GeneratedValue(generator = "UUIDGenerator")
     @Column(name = "ticket_uid", nullable = false, unique = true)
     private UUID ticket_uid;
 
-    @Column(name = "dateTime", nullable = false)
-    private LocalDateTime dateTime;
+    @GenericGenerator(name = "UUIDGenerator", strategy = "uuid2")
+    @GeneratedValue(generator = "UUIDGenerator")
+    @Column(name = "museum_uid", nullable = false)
+    private UUID museum_uid;
 
     @Column(name = "accrual", nullable = false)
     private Integer accrual;
+
+    @Column(name = "date_of_transfer")
+    private LocalDateTime dateOfTransfer;
 
     public Integer getId() {
         return id;
@@ -36,14 +36,6 @@ public class PurchaseHistory {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public UUID getUser_uid() {
-        return user_uid;
-    }
-
-    public void setUser_uid(UUID user_uid) {
-        this.user_uid = user_uid;
     }
 
     public UUID getTicket_uid() {
@@ -54,19 +46,27 @@ public class PurchaseHistory {
         this.ticket_uid = ticket_uid;
     }
 
-    public LocalDateTime getDateTime() {
-        return dateTime;
-    }
-
-    public void setDateTime(LocalDateTime dateTime) {
-        this.dateTime = dateTime;
-    }
-
     public Integer getAccrual() {
         return accrual;
     }
 
     public void setAccrual(Integer accrual) {
         this.accrual = accrual;
+    }
+
+    public UUID getMuseum_uid() {
+        return museum_uid;
+    }
+
+    public void setMuseum_uid(UUID museum_uid) {
+        this.museum_uid = museum_uid;
+    }
+
+    public LocalDateTime getDateOfTransfer() {
+        return dateOfTransfer;
+    }
+
+    public void setDateOfTransfer(LocalDateTime dateOfTransfer) {
+        this.dateOfTransfer = dateOfTransfer;
     }
 }

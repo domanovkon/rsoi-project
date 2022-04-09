@@ -3,6 +3,7 @@ package com.domanov.ticketservice.model;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -20,8 +21,13 @@ public class Ticket {
 
     @GenericGenerator(name = "UUIDGenerator", strategy = "uuid2")
     @GeneratedValue(generator = "UUIDGenerator")
-    @Column(name = "show_uid", nullable = false, unique = true)
+    @Column(name = "show_uid", nullable = false)
     private UUID show_uid;
+
+    @GenericGenerator(name = "UUIDGenerator", strategy = "uuid2")
+    @GeneratedValue(generator = "UUIDGenerator")
+    @Column(name = "user_uid", nullable = false)
+    private UUID user_uid;
 
     @Column(columnDefinition = "integer default 0", nullable = false)
     private Integer price;
@@ -56,5 +62,13 @@ public class Ticket {
 
     public void setPrice(Integer price) {
         this.price = price;
+    }
+
+    public UUID getUser_uid() {
+        return user_uid;
+    }
+
+    public void setUser_uid(UUID user_uid) {
+        this.user_uid = user_uid;
     }
 }

@@ -11,9 +11,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service("MuseumService")
 public class MuseumService {
@@ -70,6 +70,9 @@ public class MuseumService {
         museumInfoResponse.setAddress(addressResponse);
         List<ShowResponse> showResponses = new ArrayList<>();
         for (Show show : shows) {
+            if (show.getEndDate() != null && show.getEndDate().isBefore(LocalDateTime.now())) {
+                continue;
+            }
             ShowResponse showResponse = new ShowResponse();
             showResponse.setName(show.getName());
             showResponse.setDescription(show.getDescription());
@@ -80,6 +83,10 @@ public class MuseumService {
             showResponse.setPrice(show.getPrice());
             showResponses.add(showResponse);
         }
+        showResponses = showResponses.stream()
+                .sorted(Comparator.comparing(ShowResponse::getPermanentExhibition))
+                .collect(Collectors.toList());
+        Collections.reverse(showResponses);
         museumInfoResponse.setShows(showResponses);
         return museumInfoResponse;
     }

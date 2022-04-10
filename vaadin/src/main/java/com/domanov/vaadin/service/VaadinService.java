@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import javax.security.auth.kerberos.KerberosTicket;
 import javax.servlet.http.Cookie;
 
 @Service("VaadinService")
@@ -99,10 +98,8 @@ public class VaadinService {
         }
     }
 
-    public ResponseEntity<Object> buyTicket(String show_uid) {
+    public ResponseEntity<Object> buyTicket(TicketBuyRequest ticketBuyRequest) {
         try {
-            TicketBuyRequest ticketBuyRequest = new TicketBuyRequest();
-            ticketBuyRequest.setShow_uid(show_uid);
             return gatewayClient.buyTicket(getJWT(), ticketBuyRequest);
         } catch (Exception e) {
             return new ResponseEntity<>(new MuseumInfoResponse(), HttpStatus.SERVICE_UNAVAILABLE);

@@ -2,6 +2,7 @@ package com.domanov.vaadin.view;
 
 import com.domanov.vaadin.dto.MuseumInfoResponse;
 import com.domanov.vaadin.dto.ShowResponse;
+import com.domanov.vaadin.dto.TicketBuyRequest;
 import com.domanov.vaadin.service.VaadinService;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Text;
@@ -121,7 +122,7 @@ public class MuseumInfoView extends VerticalLayout implements HasUrlParameter<St
         infoLayout.add(new Div(new Text(showResponse.getDescription())));
         infoLayout.add(new Div(new Text("Цена: " + showResponse.getPrice().toString() + "₽")));
         Dialog dialog = new Dialog();
-        VerticalLayout dialogLayout = createDialogLayout(dialog, showResponse.getName(), showResponse.getPrice());
+        VerticalLayout dialogLayout = createDialogLayout(dialog, showResponse.getName(), showResponse.getPrice(), showResponse.getShow_uid());
         dialog.add(dialogLayout);
         Button buyButton = new Button("Билеты", e -> dialog.open());
         buyButton.setHeight("32px");
@@ -148,7 +149,7 @@ public class MuseumInfoView extends VerticalLayout implements HasUrlParameter<St
         return cardLayout;
     });
 
-    public static VerticalLayout createDialogLayout(Dialog dialog, String showName, Integer price) {
+    public VerticalLayout createDialogLayout(Dialog dialog, String showName, Integer price, String show_uid) {
         H3 headline = new H3("Покупка билета");
         headline.getStyle().set("margin", "var(--lumo-space-m) 0 0 0")
                 .set("font-size", "1.5em").set("font-weight", "bold");
@@ -180,7 +181,21 @@ public class MuseumInfoView extends VerticalLayout implements HasUrlParameter<St
         fieldLayout.setAlignItems(FlexComponent.Alignment.STRETCH);
 
         Button cancelButton = new Button("Отмена", e -> dialog.close());
-        Button buyButton = new Button("Купить", e -> dialog.close());
+        Button buyButton = new Button("Купить", buttonClickEvent -> {
+            try {
+                TicketBuyRequest ticketBuyRequest = new TicketBuyRequest();
+                ticketBuyRequest.setShow_uid(show_uid);
+                ticketBuyRequest.setAmount(integerField.getValue());
+                ticketBuyRequest.setPrice(price);
+                ResponseEntity<Object> response = vaadinService.buyTicket(ticketBuyRequest);
+                if (response.getStatusCode().equals(HttpStatus.OK)) {
+                    Notification.show("Билеты успешно приобретены!");
+                }
+            } catch (Exception e) {
+                Notification.show("Что-то пошло не так");
+            }
+            dialog.close();
+        });
         buyButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         HorizontalLayout buttonLayout = new HorizontalLayout(cancelButton,
                 buyButton);

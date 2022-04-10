@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -89,5 +91,15 @@ public class MuseumService {
         Collections.reverse(showResponses);
         museumInfoResponse.setShows(showResponses);
         return museumInfoResponse;
+    }
+
+    public ResponseEntity<MuseumResponse> buyTicket(TicketBuyRequest ticketBuyRequest) {
+        Museum museum = showRepository.findByShowUid(UUID.fromString(ticketBuyRequest.getShow_uid()));
+        Integer account = museum.getAccount();
+        museum.setAccount(account + ticketBuyRequest.getAmount() * ticketBuyRequest.getPrice());
+        museumRepository.save(museum);
+        MuseumResponse museumResponse = new MuseumResponse();
+        museumResponse.setMuseum_uid(museum.getMuseum_uid());
+        return new ResponseEntity<>(museumResponse, HttpStatus.OK);
     }
 }

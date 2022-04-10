@@ -2,6 +2,7 @@ package com.domanov.gatewayservice.controller;
 
 import com.domanov.gatewayservice.dto.MuseumInfoResponse;
 import com.domanov.gatewayservice.dto.MuseumPageResponse;
+import com.domanov.gatewayservice.dto.TicketBuyRequest;
 import com.domanov.gatewayservice.dto.UserResponse;
 import com.domanov.gatewayservice.service.GatewayService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,4 +32,10 @@ public class GatewayController {
     public ResponseEntity<MuseumInfoResponse> getMuseumInfo(@RequestHeader("jwt") String jwt, @RequestParam("uid") String uid) {
         return gatewayService.getMuseumInfo(jwt, uid);
     }
+
+    @PostMapping("/tickets")
+    public ResponseEntity<Object> buyTicket(@RequestHeader("jwt") String jwt, @RequestBody TicketBuyRequest ticketBuyRequest) {
+        return gatewayService.buyTicket(jwt, ticketBuyRequest);
+    }
+
 }

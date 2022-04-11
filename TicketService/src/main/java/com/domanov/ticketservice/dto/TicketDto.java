@@ -2,13 +2,15 @@ package com.domanov.ticketservice.dto;
 
 import java.time.LocalDateTime;
 
-public class TicketBuyRequest {
+public class TicketDto {
 
     private String show_uid;
 
     private Integer price;
 
-    private Integer amount;
+    private String date;
+
+    private LocalDateTime dateTime;
 
     public String getShow_uid() {
         return show_uid;
@@ -26,11 +28,19 @@ public class TicketBuyRequest {
         this.price = price;
     }
 
-    public Integer getAmount() {
-        return amount;
+    public String getDate() {
+        return date;
     }
 
-    public void setAmount(Integer amount) {
-        this.amount = amount;
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public LocalDateTime getDateTime() {
+        return dateTime;
+    }
+
+    public void setDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
     }
 }

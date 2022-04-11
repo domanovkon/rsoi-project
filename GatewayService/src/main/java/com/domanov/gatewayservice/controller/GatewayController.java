@@ -1,9 +1,6 @@
 package com.domanov.gatewayservice.controller;
 
-import com.domanov.gatewayservice.dto.MuseumInfoResponse;
-import com.domanov.gatewayservice.dto.MuseumPageResponse;
-import com.domanov.gatewayservice.dto.TicketBuyRequest;
-import com.domanov.gatewayservice.dto.UserResponse;
+import com.domanov.gatewayservice.dto.*;
 import com.domanov.gatewayservice.service.GatewayService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -38,4 +35,13 @@ public class GatewayController {
         return gatewayService.buyTicket(jwt, ticketBuyRequest);
     }
 
+    @GetMapping("/history")
+    public ResponseEntity<TicketListDto> getTicketHistory(@RequestHeader("jwt") String jwt) {
+        return gatewayService.getTicketHistory(jwt);
+    }
+
+    @PostMapping("/theme")
+    public ResponseEntity<Object> changeTheme(@RequestHeader("jwt") String jwt,  @RequestHeader("theme") Boolean darkTheme) {
+        return gatewayService.changeTheme(jwt, darkTheme);
+    }
 }

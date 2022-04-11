@@ -3,6 +3,7 @@ package com.domanov.gatewayservice.service;
 import com.domanov.gatewayservice.dto.UserResponse;
 import com.domanov.gatewayservice.dto.ValidateToken;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -18,4 +19,7 @@ public interface SessionClient {
 
     @RequestMapping(method = RequestMethod.GET, value = "/validate")
     ValidateToken validate(@RequestHeader("jwt") String jwt);
+
+    @RequestMapping(method = RequestMethod.POST, value = "/theme")
+    ResponseEntity<Object> changeTheme(@RequestHeader("login") String login, @RequestHeader("theme") Boolean darkTheme);
 }

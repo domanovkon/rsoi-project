@@ -61,7 +61,6 @@ public class MuseumView extends VerticalLayout {
             grid.setItems(initialItems);
             Button previousButton = new Button("Предыдущая страница", e -> {
                 if (currentPageNumber <= 1) {
-                    setEnabled(false);
                     return;
                 }
                 ResponseEntity<MuseumPageResponse> museumsNext = vaadinService.getMuseums(--currentPageNumber, itemsPerPage);

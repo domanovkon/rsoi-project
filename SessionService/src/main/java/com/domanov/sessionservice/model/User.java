@@ -34,6 +34,9 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @Column(name = "dark_theme", columnDefinition = "boolean default false")
+    private Boolean darkTheme;
+
     public Integer getId() {
         return id;
     }
@@ -88,5 +91,13 @@ public class User {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public Boolean getDarkTheme() {
+        return darkTheme;
+    }
+
+    public void setDarkTheme(Boolean darkTheme) {
+        this.darkTheme = darkTheme;
     }
 }

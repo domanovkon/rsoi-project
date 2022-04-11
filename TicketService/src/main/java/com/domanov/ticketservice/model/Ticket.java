@@ -3,6 +3,7 @@ package com.domanov.ticketservice.model;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -30,6 +31,9 @@ public class Ticket {
 
     @Column(columnDefinition = "integer default 0", nullable = false)
     private Integer price;
+
+    @Column(name = "buy_date", nullable = false)
+    private LocalDateTime buyDate;
 
     public Integer getId() {
         return id;
@@ -69,5 +73,13 @@ public class Ticket {
 
     public void setUser_uid(UUID user_uid) {
         this.user_uid = user_uid;
+    }
+
+    public LocalDateTime getBuyDate() {
+        return buyDate;
+    }
+
+    public void setBuyDate(LocalDateTime buyDate) {
+        this.buyDate = buyDate;
     }
 }

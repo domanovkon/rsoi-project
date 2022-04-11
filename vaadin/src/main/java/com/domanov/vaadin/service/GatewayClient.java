@@ -1,14 +1,9 @@
 package com.domanov.vaadin.service;
 
-import com.domanov.vaadin.dto.MuseumInfoResponse;
-import com.domanov.vaadin.dto.MuseumPageResponse;
-import com.domanov.vaadin.dto.TicketBuyRequest;
-import com.domanov.vaadin.dto.UserResponse;
+import com.domanov.vaadin.dto.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.print.attribute.standard.JobKOctets;
 
 @FeignClient(name = "gateway", url = "http://localhost:8080/api/v1")
 public interface GatewayClient {
@@ -24,4 +19,10 @@ public interface GatewayClient {
 
     @RequestMapping(method = RequestMethod.POST, value = "/tickets")
     ResponseEntity<Object> buyTicket(@RequestHeader("jwt") String jwt, @RequestBody TicketBuyRequest ticketBuyRequest);
+
+    @RequestMapping(method = RequestMethod.GET, value = "/history")
+    ResponseEntity<TicketListDto> getTicketHistory(@RequestHeader("jwt") String jwt);
+
+    @RequestMapping(method = RequestMethod.POST, value = "/theme")
+    ResponseEntity<Object> changeTheme(@RequestHeader("jwt") String jwt, @RequestHeader("theme") Boolean darkTheme);
 }

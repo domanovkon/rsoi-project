@@ -1,9 +1,6 @@
 package com.domanov.gatewayservice.service;
 
-import com.domanov.gatewayservice.dto.MuseumInfoResponse;
-import com.domanov.gatewayservice.dto.MuseumPageResponse;
-import com.domanov.gatewayservice.dto.MuseumResponse;
-import com.domanov.gatewayservice.dto.TicketBuyRequest;
+import com.domanov.gatewayservice.dto.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,4 +16,7 @@ public interface MuseumClient {
 
     @RequestMapping(method = RequestMethod.POST, value = "/tickets")
     ResponseEntity<MuseumResponse> buyTicket(@RequestBody TicketBuyRequest ticketBuyRequest);
+
+    @RequestMapping(method = RequestMethod.PUT, value = "/history")
+    ResponseEntity<TicketListDto> getShowMuseumList(@RequestBody TicketListDto ticketListDto);
 }

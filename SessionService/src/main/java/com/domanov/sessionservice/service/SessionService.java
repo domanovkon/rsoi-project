@@ -33,6 +33,7 @@ public class SessionService {
             userResponse.setLogin(user.getLogin());
             AuthResponse authResponse = new AuthResponse();
             authResponse.setJwt(jwtTokenUtil.generateToken(userResponse));
+            authResponse.setDarkTheme(user.getDarkTheme());
             return new ResponseEntity<>(authResponse, HttpStatus.OK);
         }
         return new ResponseEntity<>(new AuthResponse(), HttpStatus.NO_CONTENT);
@@ -95,5 +96,14 @@ public class SessionService {
         else {
             return null;
         }
+    }
+
+    public ResponseEntity<Object> changeTheme(String login, Boolean darkTheme) {
+        User user = userRepository.findByUsername(login);
+        if (user != null) {
+            user.setDarkTheme(darkTheme);
+            userRepository.save(user);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

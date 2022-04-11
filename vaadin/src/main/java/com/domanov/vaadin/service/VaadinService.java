@@ -105,4 +105,20 @@ public class VaadinService {
             return new ResponseEntity<>(new MuseumInfoResponse(), HttpStatus.SERVICE_UNAVAILABLE);
         }
     }
+
+    public ResponseEntity<TicketListDto> getTicketHistory() {
+        try {
+            return gatewayClient.getTicketHistory(getJWT());
+        } catch (Exception e) {
+            return new ResponseEntity<>(new TicketListDto(), HttpStatus.SERVICE_UNAVAILABLE);
+        }
+    }
+
+    public ResponseEntity<Object> changeTheme(Boolean darkTheme) {
+        try {
+            return gatewayClient.changeTheme(getJWT(), darkTheme);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new TicketListDto(), HttpStatus.SERVICE_UNAVAILABLE);
+        }
+    }
 }

@@ -1,7 +1,6 @@
 package com.domanov.gatewayservice.service;
 
-import com.domanov.gatewayservice.dto.TicketBuyRequest;
-import com.domanov.gatewayservice.dto.TicketResponse;
+import com.domanov.gatewayservice.dto.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,4 +13,7 @@ public interface TicketClient {
 
     @RequestMapping(method = RequestMethod.POST, value = "/tickets")
     ResponseEntity<TicketResponse> buyTicket(@RequestHeader("user_uid") String user_uid, @RequestBody TicketBuyRequest ticketBuyRequest);
+
+    @RequestMapping(method = RequestMethod.GET, value = "/history")
+    ResponseEntity<TicketListDto> getTicketHistory(@RequestHeader("user_uid") String user_uid);
 }

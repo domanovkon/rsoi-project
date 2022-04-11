@@ -5,6 +5,7 @@ import com.domanov.museumservice.model.Show;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import javax.persistence.Tuple;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,4 +16,7 @@ public interface ShowRepository extends JpaRepository<Show, Integer> {
 
     @Query("SELECT f.museum FROM Show f WHERE f.show_uid = ?1")
     Museum findByShowUid(UUID uid);
+
+    @Query("SELECT f FROM Show f WHERE f.show_uid = ?1")
+    Show findShowByShowUid(UUID uid);
 }

@@ -6,6 +6,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Service("GatewayService")
 public class GatewayService {
@@ -84,6 +87,38 @@ public class GatewayService {
             }
         } catch (Exception e) {
             return new ResponseEntity<>(new MuseumInfoResponse(), HttpStatus.SERVICE_UNAVAILABLE);
+        }
+    }
+
+    public ResponseEntity<TicketListDto> getTicketHistory(String jwt) {
+        try {
+            ValidateToken validateToken = sessionClient.validate(jwt);
+            if (validateToken.getLogin() != null) {
+                UserResponse userResponse = sessionClient.getUser(validateToken.getLogin());
+                ResponseEntity<TicketListDto> ticketHistoryResponse = ticketClient.getTicketHistory(userResponse.getUser_uid().toString());
+                if (ticketHistoryResponse.getStatusCode().equals(HttpStatus.OK) && ticketHistoryResponse.getBody().getTicketList().size() > 0) {
+                    ResponseEntity<TicketListDto> ticketHistoryListResponse = museumClient.getShowMuseumList(ticketHistoryResponse.getBody());
+                    return new ResponseEntity<>(ticketHistoryListResponse.getBody(), HttpStatus.OK);
+                }
+                return new ResponseEntity<>(HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(new TicketListDto(), HttpStatus.UNAUTHORIZED);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(new TicketListDto(), HttpStatus.SERVICE_UNAVAILABLE);
+        }
+    }
+
+    public ResponseEntity<Object> changeTheme(String jwt, Boolean darkTheme) {
+        try {
+            ValidateToken validateToken = sessionClient.validate(jwt);
+            if (validateToken.getLogin() != null) {
+                sessionClient.changeTheme(validateToken.getLogin(), darkTheme);
+                return new ResponseEntity<>(HttpStatus.OK);
+            }
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new TicketListDto(), HttpStatus.SERVICE_UNAVAILABLE);
         }
     }
 }

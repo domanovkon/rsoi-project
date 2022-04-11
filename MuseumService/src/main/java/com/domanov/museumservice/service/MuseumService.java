@@ -102,4 +102,33 @@ public class MuseumService {
         museumResponse.setMuseum_uid(museum.getMuseum_uid());
         return new ResponseEntity<>(museumResponse, HttpStatus.OK);
     }
+
+    public ResponseEntity<TicketListDto> getShowMuseumList(TicketListDto ticketListDto) {
+        List<TicketDto> ticketList = new ArrayList<>();
+        for (TicketDto ticketDto : ticketListDto.getTicketList()) {
+            TicketDto ticketDto1 = new TicketDto();
+            Show show = showRepository.findShowByShowUid(UUID.fromString(ticketDto.getShow_uid()));
+            ticketDto1.setShowName(show.getName());
+            ticketDto1.setMuseumName(show.getMuseum().getName());
+            ticketDto1.setPrice(ticketDto.getPrice());
+            ticketDto1.setDate(ticketDto.getDate());
+            ticketDto1.setDateTime(ticketDto.getDateTime());
+            ticketList.add(ticketDto1);
+        }
+        TicketListDto ticketListDto1 = new TicketListDto();
+        ticketListDto1.setTicketList(ticketList);
+        return new ResponseEntity<>(ticketListDto1, HttpStatus.OK);
+//        TicketHistoryList ticketHistoryList = new TicketHistoryList();
+//        List<TicketHistory> ticketHistories = new ArrayList<>();
+//        for (String str : showMuseumReponse.getShowUidList()) {
+//            Show show = showRepository.findShowByShowUid(UUID.fromString(str));
+//            TicketHistory ticketHistory = new TicketHistory();
+//            ticketHistory.setShowName(show.getName());
+//            ticketHistory.setMuseumName(show.getMuseum().getName());
+//            ticketHistory.setShow_uid(show.getShow_uid().toString());
+//            ticketHistories.add(ticketHistory);
+//        }
+//        ticketHistoryList.setTicketHistories(ticketHistories);
+//        return ticketHistoryList;
+    }
 }

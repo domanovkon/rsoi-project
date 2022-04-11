@@ -2,7 +2,6 @@ package com.domanov.vaadin.view.login;
 
 import com.domanov.vaadin.dto.AuthResponse;
 import com.domanov.vaadin.service.VaadinService;
-import com.domanov.vaadin.view.MainLayout;
 import com.domanov.vaadin.view.register.RegisterView;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -12,9 +11,11 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.dom.ThemeList;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
+import com.vaadin.flow.theme.lumo.Lumo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,6 +47,12 @@ public class LoginView extends VerticalLayout {
                     } else {
                         ResponseEntity<AuthResponse> response = vaadinService.authenticate(username.getValue(), password.getValue());
                         if (response.getStatusCode().equals(HttpStatus.OK)) {
+                            ThemeList themeList = UI.getCurrent().getElement().getThemeList();
+                            if (response.getBody().getDarkTheme()) {
+                                themeList.add(Lumo.DARK);
+                            } else {
+                                themeList.remove(Lumo.DARK);
+                            }
                             UI.getCurrent().navigate("");
                         } else if (response.getStatusCode().equals(HttpStatus.NO_CONTENT)) {
                             Notification.show("Неверный логин или пароль!");

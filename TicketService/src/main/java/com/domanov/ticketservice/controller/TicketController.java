@@ -1,6 +1,8 @@
 package com.domanov.ticketservice.controller;
 
 import com.domanov.ticketservice.dto.TicketBuyRequest;
+import com.domanov.ticketservice.dto.TicketDto;
+import com.domanov.ticketservice.dto.TicketListDto;
 import com.domanov.ticketservice.dto.TicketResponse;
 import com.domanov.ticketservice.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,5 +20,11 @@ public class TicketController {
     @PostMapping("/tickets")
     public ResponseEntity<TicketResponse> buyTicket(@RequestHeader("user_uid") String user_uid, @RequestBody TicketBuyRequest ticketBuyRequest) {
         return ticketService.buyTicket(user_uid, ticketBuyRequest);
+    }
+
+    @GetMapping("/history")
+    @CrossOrigin(origins = "*")
+    public ResponseEntity<TicketListDto> getTicketHistory(@RequestHeader("user_uid") String user_uid) {
+        return ticketService.getTicketHistory(user_uid);
     }
 }

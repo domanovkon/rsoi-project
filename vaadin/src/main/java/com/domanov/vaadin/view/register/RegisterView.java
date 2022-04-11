@@ -2,7 +2,6 @@ package com.domanov.vaadin.view.register;
 
 import com.domanov.vaadin.dto.AuthResponse;
 import com.domanov.vaadin.service.VaadinService;
-import com.domanov.vaadin.view.MainLayout;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H2;

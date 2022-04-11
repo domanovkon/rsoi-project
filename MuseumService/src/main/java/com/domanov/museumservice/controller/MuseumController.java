@@ -1,9 +1,6 @@
 package com.domanov.museumservice.controller;
 
-import com.domanov.museumservice.dto.MuseumInfoResponse;
-import com.domanov.museumservice.dto.MuseumPageResponse;
-import com.domanov.museumservice.dto.MuseumResponse;
-import com.domanov.museumservice.dto.TicketBuyRequest;
+import com.domanov.museumservice.dto.*;
 import com.domanov.museumservice.service.MuseumService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -32,5 +29,11 @@ public class MuseumController {
     @PostMapping("/tickets")
     public ResponseEntity<MuseumResponse> buyTicket(@RequestBody TicketBuyRequest ticketBuyRequest) {
         return museumService.buyTicket(ticketBuyRequest);
+    }
+
+    @PutMapping("/history")
+    @CrossOrigin(origins = "*")
+    public ResponseEntity<TicketListDto> getShowMuseumList(@RequestBody TicketListDto ticketListDto) {
+        return museumService.getShowMuseumList(ticketListDto);
     }
 }

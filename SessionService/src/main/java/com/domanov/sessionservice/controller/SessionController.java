@@ -50,4 +50,10 @@ public class SessionController {
         }
         return new UserResponse();
     }
+
+    @PostMapping("/theme")
+    @CrossOrigin(origins = "*")
+    public ResponseEntity<Object> changeTheme(@RequestHeader("login") String login, @RequestHeader("theme") Boolean darkTheme) {
+        return sessionService.changeTheme(login, darkTheme);
+    }
 }

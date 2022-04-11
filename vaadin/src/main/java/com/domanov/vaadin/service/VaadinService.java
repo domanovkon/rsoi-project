@@ -51,7 +51,12 @@ public class VaadinService {
                 myCookie.setMaxAge(10 * 60);
                 myCookie.setPath("/");
                 VaadinResponse.getCurrent().addCookie(myCookie);
-                return response;
+                try {
+                    ResponseEntity<Object> responseEntity = gatewayClient.addUserRegistrationStat(getJWT());
+                    return response;
+                } catch (Exception e) {
+                    return response;
+                }
             }
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (Exception e) {

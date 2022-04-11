@@ -25,4 +25,7 @@ public interface GatewayClient {
 
     @RequestMapping(method = RequestMethod.POST, value = "/theme")
     ResponseEntity<Object> changeTheme(@RequestHeader("jwt") String jwt, @RequestHeader("theme") Boolean darkTheme);
+
+    @RequestMapping(method = RequestMethod.POST, value = "/user-reg")
+    ResponseEntity<Object> addUserRegistrationStat(@RequestHeader("jwt") String jwt);
 }

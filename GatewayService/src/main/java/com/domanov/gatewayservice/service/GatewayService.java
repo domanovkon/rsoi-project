@@ -121,4 +121,12 @@ public class GatewayService {
             return new ResponseEntity<>(new TicketListDto(), HttpStatus.SERVICE_UNAVAILABLE);
         }
     }
+
+    public ResponseEntity<Object> addUserRegistrationStat(String jwt) {
+        ResponseEntity<UserResponse> user = this.getUser(jwt);
+        if (user.getStatusCode().equals(HttpStatus.OK)) {
+            return statisticClient.addUserRegistrationStat(user.getBody().getUser_uid().toString());
+        }
+        return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
+    }
 }

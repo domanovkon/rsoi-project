@@ -2,7 +2,9 @@ package com.domanov.statisticservice.service;
 
 import com.domanov.statisticservice.dto.AddStatRequest;
 import com.domanov.statisticservice.model.MoneyTransfer;
+import com.domanov.statisticservice.model.UserRegistration;
 import com.domanov.statisticservice.repository.MoneyTransferRepository;
+import com.domanov.statisticservice.repository.UserRegistrationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,9 @@ public class StatisticService {
     @Autowired
     private MoneyTransferRepository moneyTransferRepository;
 
+    @Autowired
+    private UserRegistrationRepository userRegistrationRepository;
+
     public ResponseEntity<Object> moneyTransfer(AddStatRequest addStatRequest) {
         List<MoneyTransfer> transferList = new ArrayList<>();
         for (String ticket : addStatRequest.getTickets()) {
@@ -32,6 +37,14 @@ public class StatisticService {
         for (MoneyTransfer moneyTransfer : transferList) {
             moneyTransferRepository.save(moneyTransfer);
         }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    public ResponseEntity<Object> addUserRegistrationStat(String uid) {
+        UserRegistration userRegistration = new UserRegistration();
+        userRegistration.setUser_uid(UUID.fromString(uid));
+        userRegistration.setDateOfRegistration(LocalDateTime.now());
+        userRegistrationRepository.save(userRegistration);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

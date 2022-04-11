@@ -18,4 +18,10 @@ public class StatisticController {
     public ResponseEntity<Object> moneyTransfer(@RequestBody AddStatRequest addStatRequest) {
         return statisticService.moneyTransfer(addStatRequest);
     }
+
+    @PostMapping("/user-reg")
+    public ResponseEntity<Object> addUserRegistrationStat(@RequestHeader("uid") String uid) {
+        return statisticService.addUserRegistrationStat(uid);
+    }
+
 }

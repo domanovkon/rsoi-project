@@ -44,4 +44,9 @@ public class GatewayController {
     public ResponseEntity<Object> changeTheme(@RequestHeader("jwt") String jwt,  @RequestHeader("theme") Boolean darkTheme) {
         return gatewayService.changeTheme(jwt, darkTheme);
     }
+
+    @PostMapping("/user-reg")
+    public ResponseEntity<Object> addUserRegistrationStat(@RequestHeader("jwt") String jwt) {
+        return gatewayService.addUserRegistrationStat(jwt);
+    }
 }

@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.Cookie;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service("VaadinService")
 public class VaadinService {
@@ -52,7 +54,7 @@ public class VaadinService {
                 myCookie.setPath("/");
                 VaadinResponse.getCurrent().addCookie(myCookie);
                 try {
-                    ResponseEntity<Object> responseEntity = gatewayClient.addUserRegistrationStat(getJWT());
+                    ResponseEntity<Object> responseEntity = gatewayClient.addUserRegistrationStat("Bearer " + myCookie.getValue());
                     return response;
                 } catch (Exception e) {
                     return response;
@@ -124,6 +126,22 @@ public class VaadinService {
             return gatewayClient.changeTheme(getJWT(), darkTheme);
         } catch (Exception e) {
             return new ResponseEntity<>(new TicketListDto(), HttpStatus.SERVICE_UNAVAILABLE);
+        }
+    }
+
+    public ResponseEntity<List<MoneyTransferDto>> getMoneyTransfer() {
+        try {
+            return gatewayClient.getMoneyTransfer(getJWT());
+        } catch (Exception e) {
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.SERVICE_UNAVAILABLE);
+        }
+    }
+
+    public ResponseEntity<List<UserStatDto>> getUserStat() {
+        try {
+            return gatewayClient.getUserStat(getJWT());
+        } catch (Exception e) {
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.SERVICE_UNAVAILABLE);
         }
     }
 }

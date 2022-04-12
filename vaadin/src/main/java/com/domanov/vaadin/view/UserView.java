@@ -1,9 +1,6 @@
 package com.domanov.vaadin.view;
 
-import com.domanov.vaadin.dto.TicketDto;
-import com.domanov.vaadin.dto.TicketHistory;
-import com.domanov.vaadin.dto.TicketListDto;
-import com.domanov.vaadin.dto.UserResponse;
+import com.domanov.vaadin.dto.*;
 import com.domanov.vaadin.service.VaadinService;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.avatar.Avatar;
@@ -24,7 +21,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import javax.annotation.PostConstruct;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -82,30 +78,82 @@ public class UserView extends VerticalLayout {
             profile.add(avatar, log, name, themeButton);
             profile.getStyle().set("margin-left", "50px");
 
-            H3 historyTitle = new H3("История покупок");
-            ticketHistory.getStyle().set("margin-top", "-32px");
-            ticketHistory.add(historyTitle);
-            ticketHistory.getStyle().set("margin-left", "90px");
-            horizontalLayout.add(profile);
-            ResponseEntity<TicketListDto> ticketHistoryResponse = vaadinService.getTicketHistory();
-            if (ticketHistoryResponse.getStatusCode().equals(HttpStatus.OK)) {
-                if (ticketHistoryResponse.getBody().getTicketList().size() > 0) {
-                    List<TicketDto> ticketList = ticketHistoryResponse.getBody().getTicketList().stream()
-                            .sorted(Comparator.comparing(TicketDto::getDateTime)).collect(Collectors.toList());
-                    Collections.reverse(ticketList);
-                    Grid<TicketDto> grid = new Grid<>(TicketDto.class, false);
-                    grid.addColumn(TicketDto::getMuseumName).setHeader("Музей")
-                            .setFooter(String.format("Всего %s", ticketList.size())).setAutoWidth(true);
-                    grid.addColumn(TicketDto::getShowName).setHeader("Выставка").setAutoWidth(true);
-                    grid.addColumn(TicketDto::getPrice).setHeader("Цена").setAutoWidth(true);
-                    grid.addColumn(TicketDto::getDate).setHeader("Дата").setWidth("7em").setTextAlign(ColumnTextAlign.END);
-                    grid.setItems(ticketList);
+            if (userResponse.getRole().equals("USER")) {
+                H3 historyTitle = new H3("История покупок");
+                ticketHistory.getStyle().set("margin-top", "-32px");
+                ticketHistory.add(historyTitle);
+                ticketHistory.getStyle().set("margin-left", "90px");
+                horizontalLayout.add(profile);
+                ResponseEntity<TicketListDto> ticketHistoryResponse = vaadinService.getTicketHistory();
+                if (ticketHistoryResponse.getStatusCode().equals(HttpStatus.OK)) {
+                    if (ticketHistoryResponse.getBody().getTicketList().size() > 0) {
+                        List<TicketDto> ticketList = ticketHistoryResponse.getBody().getTicketList().stream()
+                                .sorted(Comparator.comparing(TicketDto::getDateTime)).collect(Collectors.toList());
+                        Collections.reverse(ticketList);
+                        Grid<TicketDto> grid = new Grid<>(TicketDto.class, false);
+                        grid.addColumn(TicketDto::getMuseumName).setHeader("Музей")
+                                .setFooter(String.format("Всего %s", ticketList.size())).setAutoWidth(true);
+                        grid.addColumn(TicketDto::getShowName).setHeader("Выставка").setAutoWidth(true);
+                        grid.addColumn(TicketDto::getPrice).setHeader("Цена").setAutoWidth(true);
+                        grid.addColumn(TicketDto::getDate).setHeader("Дата").setWidth("7em").setTextAlign(ColumnTextAlign.END);
+                        grid.setItems(ticketList);
+                        grid.setMinWidth("860px");
+                        grid.setHeight("450px");
+                        grid.addThemeVariants(GridVariant.LUMO_NO_ROW_BORDERS);
+                        ticketHistory.add(grid);
+                    } else {
+                        ticketHistory.add(new Span("Купленных билетов нет"));
+                    }
+                    horizontalLayout.add(ticketHistory);
+                }
+            } else if (userResponse.getRole().equals("ADMIN")) {
+                Button addMuseumButton = new Button("Добавить музей");
+                profile.add(addMuseumButton);
+                H3 transferTitle = new H3("Поступления на счет музеев");
+                transferTitle.getStyle().set("margin-bottom", "-8px").set("margin-top", "14px");
+                ticketHistory.getStyle().set("margin-top", "-32px");
+                ticketHistory.add(transferTitle);
+                ticketHistory.getStyle().set("margin-left", "90px");
+                horizontalLayout.add(profile);
+                ResponseEntity<List<MoneyTransferDto>> moneyTransferResponse = vaadinService.getMoneyTransfer();
+                if (moneyTransferResponse.getStatusCode().equals(HttpStatus.OK) && moneyTransferResponse.getBody().size() > 0) {
+                    List<MoneyTransferDto> moneyTransferDtoList = moneyTransferResponse.getBody().stream()
+                            .sorted(Comparator.comparing(MoneyTransferDto::getDateTime)).collect(Collectors.toList());
+                    Collections.reverse(moneyTransferDtoList);
+                    Grid<MoneyTransferDto> grid = new Grid<>(MoneyTransferDto.class, false);
+                    grid.addColumn(MoneyTransferDto::getMuseumName).setHeader("Музей")
+                            .setFooter(String.format("Всего %s", moneyTransferDtoList.size())).setAutoWidth(true);
+                    grid.addColumn(MoneyTransferDto::getAccrual).setHeader("Поступление").setAutoWidth(true);
+                    grid.addColumn(MoneyTransferDto::getDate).setHeader("Дата").setWidth("7em").setTextAlign(ColumnTextAlign.END);
+                    grid.setItems(moneyTransferDtoList);
                     grid.setMinWidth("860px");
-                    grid.setHeight("450px");
+                    grid.setMaxHeight("240px");
                     grid.addThemeVariants(GridVariant.LUMO_NO_ROW_BORDERS);
                     ticketHistory.add(grid);
+
+                    H3 userStatTitle = new H3("Регистрация новых пользователей");
+                    userStatTitle.getStyle().set("margin-bottom", "-8px").set("margin-top", "5px");
+                    ticketHistory.add(userStatTitle);
+                    ResponseEntity<List<UserStatDto>> userStatResponse = vaadinService.getUserStat();
+                    if (userStatResponse.getStatusCode().equals(HttpStatus.OK) && userStatResponse.getBody().size() > 0) {
+                        List<UserStatDto> userStatDtoList = userStatResponse.getBody().stream()
+                                .sorted(Comparator.comparing(UserStatDto::getRegisterDate)).collect(Collectors.toList());
+                        Collections.reverse(userStatDtoList);
+                        Grid<UserStatDto> gridUser = new Grid<>(UserStatDto.class, false);
+                        gridUser.addColumn(UserStatDto::getName).setHeader("Имя")
+                                .setFooter(String.format("Всего %s", userStatDtoList.size())).setAutoWidth(true);
+                        gridUser.addColumn(UserStatDto::getUsername).setHeader("Логин").setAutoWidth(true);
+                        gridUser.addColumn(UserStatDto::getStringRegisterDate).setHeader("Дата").setWidth("7em").setTextAlign(ColumnTextAlign.END);
+                        gridUser.setItems(userStatDtoList);
+                        gridUser.setMinWidth("860px");
+                        gridUser.setMaxHeight("240px");
+                        gridUser.addThemeVariants(GridVariant.LUMO_NO_ROW_BORDERS);
+                        ticketHistory.add(gridUser);
+                    }
                 } else {
-                    ticketHistory.add(new Span("Купленных билетов нет"));
+                    Span err = new Span("Статистика в данный момент недоступна");
+                    err.getStyle().set("width", "400px");
+                    ticketHistory.add(err);
                 }
                 horizontalLayout.add(ticketHistory);
             }

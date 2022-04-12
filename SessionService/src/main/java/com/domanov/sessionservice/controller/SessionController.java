@@ -1,13 +1,12 @@
 package com.domanov.sessionservice.controller;
 
-import com.domanov.sessionservice.dto.AuthResponse;
-import com.domanov.sessionservice.dto.RegistrationRequest;
-import com.domanov.sessionservice.dto.UserResponse;
-import com.domanov.sessionservice.dto.ValidateToken;
+import com.domanov.sessionservice.dto.*;
 import com.domanov.sessionservice.service.SessionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @CrossOrigin("https://localhost:8084/api/v1")
@@ -55,5 +54,11 @@ public class SessionController {
     @CrossOrigin(origins = "*")
     public ResponseEntity<Object> changeTheme(@RequestHeader("login") String login, @RequestHeader("theme") Boolean darkTheme) {
         return sessionService.changeTheme(login, darkTheme);
+    }
+
+    @PutMapping("/user-stat")
+    @CrossOrigin(origins = "*")
+    public List<UserStatDto> getUserStat(@RequestBody List<UserStatDto> userStatDtoList) {
+        return sessionService.getUserStat(userStatDtoList);
     }
 }

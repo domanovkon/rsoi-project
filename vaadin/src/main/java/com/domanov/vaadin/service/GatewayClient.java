@@ -5,6 +5,8 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @FeignClient(name = "gateway", url = "http://localhost:8080/api/v1")
 public interface GatewayClient {
 
@@ -28,4 +30,10 @@ public interface GatewayClient {
 
     @RequestMapping(method = RequestMethod.POST, value = "/user-reg")
     ResponseEntity<Object> addUserRegistrationStat(@RequestHeader("jwt") String jwt);
+
+    @RequestMapping(method = RequestMethod.GET, value = "/transfer")
+    ResponseEntity<List<MoneyTransferDto>> getMoneyTransfer(@RequestHeader("jwt") String jwt);
+
+    @RequestMapping(method = RequestMethod.GET, value = "/user-stat")
+    ResponseEntity<List<UserStatDto>> getUserStat(@RequestHeader("jwt") String jwt);
 }

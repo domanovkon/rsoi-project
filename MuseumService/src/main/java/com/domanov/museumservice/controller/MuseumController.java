@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @CrossOrigin("https://localhost:8081/api/v1")
 @RequestMapping("api/v1")
@@ -35,5 +37,11 @@ public class MuseumController {
     @CrossOrigin(origins = "*")
     public ResponseEntity<TicketListDto> getShowMuseumList(@RequestBody TicketListDto ticketListDto) {
         return museumService.getShowMuseumList(ticketListDto);
+    }
+
+    @PutMapping("/transfer")
+    @CrossOrigin(origins = "*")
+    public List<MoneyTransferDto> getMoneyTransfer(@RequestBody List<MoneyTransferDto> moneyTransferDtoList) {
+        return museumService.getMoneyTransfer(moneyTransferDtoList);
     }
 }

@@ -129,4 +129,36 @@ public class GatewayService {
         }
         return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
     }
+
+    public ResponseEntity<List<MoneyTransferDto>> getMoneyTransfer(String jwt) {
+        try {
+            ValidateToken validateToken = sessionClient.validate(jwt);
+            if (validateToken.getLogin() != null) {
+                ResponseEntity<List<MoneyTransferDto>> response = statisticClient.getMoneyTransfer();
+                if (response.getStatusCode().equals(HttpStatus.OK) && response.getBody().size() > 0) {
+                    List<MoneyTransferDto> museumTransferList = museumClient.getMoneyTransfer(response.getBody());
+                    return new ResponseEntity<>(museumTransferList, HttpStatus.OK);
+                }
+            }
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.SERVICE_UNAVAILABLE);
+        }
+    }
+
+    public ResponseEntity<List<UserStatDto>> getUserStat(String jwt) {
+        try {
+            ValidateToken validateToken = sessionClient.validate(jwt);
+            if (validateToken.getLogin() != null) {
+                ResponseEntity<List<UserStatDto>> response = statisticClient.getUserStat();
+                if (response.getStatusCode().equals(HttpStatus.OK) && response.getBody().size() > 0) {
+                    List<UserStatDto> userStatDtoList = sessionClient.getUserStat(response.getBody());
+                    return new ResponseEntity<>(userStatDtoList, HttpStatus.OK);
+                }
+            }
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.SERVICE_UNAVAILABLE);
+        }
+    }
 }

@@ -10,4 +10,7 @@ public interface MuseumRepository extends JpaRepository<Museum, Integer> {
 
     @Query("SELECT f FROM Museum f WHERE f.museum_uid = ?1")
     Museum findByUid(UUID uid);
+
+    @Query("SELECT f.name FROM Museum f WHERE f.museum_uid = ?1")
+    String findNameByUid(UUID uid);
 }

@@ -5,6 +5,8 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @FeignClient(name = "museum", url = "http://localhost:8081/api/v1")
 public interface MuseumClient {
 
@@ -19,4 +21,7 @@ public interface MuseumClient {
 
     @RequestMapping(method = RequestMethod.PUT, value = "/history")
     ResponseEntity<TicketListDto> getShowMuseumList(@RequestBody TicketListDto ticketListDto);
+
+    @RequestMapping(method = RequestMethod.PUT, value = "/transfer")
+    List<MoneyTransferDto> getMoneyTransfer(@RequestBody List<MoneyTransferDto> moneyTransferDtoList);
 }

@@ -118,17 +118,14 @@ public class MuseumService {
         TicketListDto ticketListDto1 = new TicketListDto();
         ticketListDto1.setTicketList(ticketList);
         return new ResponseEntity<>(ticketListDto1, HttpStatus.OK);
-//        TicketHistoryList ticketHistoryList = new TicketHistoryList();
-//        List<TicketHistory> ticketHistories = new ArrayList<>();
-//        for (String str : showMuseumReponse.getShowUidList()) {
-//            Show show = showRepository.findShowByShowUid(UUID.fromString(str));
-//            TicketHistory ticketHistory = new TicketHistory();
-//            ticketHistory.setShowName(show.getName());
-//            ticketHistory.setMuseumName(show.getMuseum().getName());
-//            ticketHistory.setShow_uid(show.getShow_uid().toString());
-//            ticketHistories.add(ticketHistory);
-//        }
-//        ticketHistoryList.setTicketHistories(ticketHistories);
-//        return ticketHistoryList;
+    }
+
+    public List<MoneyTransferDto> getMoneyTransfer(List<MoneyTransferDto> moneyTransferDtoList) {
+        List<MoneyTransferDto> moneyTransferDtos = new ArrayList<>();
+        for (MoneyTransferDto moneyTransferDto : moneyTransferDtoList) {
+            moneyTransferDto.setMuseumName(museumRepository.findNameByUid(UUID.fromString(moneyTransferDto.getMuseum_uid())));
+            moneyTransferDtos.add(moneyTransferDto);
+        }
+        return moneyTransferDtos;
     }
 }

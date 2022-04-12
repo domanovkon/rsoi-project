@@ -1,13 +1,14 @@
 package com.domanov.gatewayservice.service;
 
+import com.domanov.gatewayservice.dto.MoneyTransferDto;
 import com.domanov.gatewayservice.dto.UserResponse;
+import com.domanov.gatewayservice.dto.UserStatDto;
 import com.domanov.gatewayservice.dto.ValidateToken;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED_VALUE;
 
@@ -22,4 +23,7 @@ public interface SessionClient {
 
     @RequestMapping(method = RequestMethod.POST, value = "/theme")
     ResponseEntity<Object> changeTheme(@RequestHeader("login") String login, @RequestHeader("theme") Boolean darkTheme);
+
+    @RequestMapping(method = RequestMethod.PUT, value = "/user-stat")
+    List<UserStatDto> getUserStat(@RequestBody List<UserStatDto> userStatDtoList);
 }

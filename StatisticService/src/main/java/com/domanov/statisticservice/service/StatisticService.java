@@ -1,6 +1,8 @@
 package com.domanov.statisticservice.service;
 
 import com.domanov.statisticservice.dto.AddStatRequest;
+import com.domanov.statisticservice.dto.MoneyTransferDto;
+import com.domanov.statisticservice.dto.UserStatDto;
 import com.domanov.statisticservice.model.MoneyTransfer;
 import com.domanov.statisticservice.model.UserRegistration;
 import com.domanov.statisticservice.repository.MoneyTransferRepository;
@@ -11,8 +13,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 @Service("StatisticService")
@@ -46,5 +50,39 @@ public class StatisticService {
         userRegistration.setDateOfRegistration(LocalDateTime.now());
         userRegistrationRepository.save(userRegistration);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    public ResponseEntity<List<MoneyTransferDto>> getMoneyTransfer() {
+        List<MoneyTransfer> moneyTransferList = moneyTransferRepository.findAll();
+        List<MoneyTransferDto> moneyTransferDtoList = new ArrayList<>();
+        for (MoneyTransfer moneyTransfer : moneyTransferList) {
+            MoneyTransferDto moneyTransferDto = new MoneyTransferDto();
+            moneyTransferDto.setTicket_uid(moneyTransfer.getTicket_uid().toString());
+            moneyTransferDto.setMuseum_uid(moneyTransfer.getMuseum_uid().toString());
+            moneyTransferDto.setDateTime(moneyTransfer.getDateOfTransfer());
+            moneyTransferDto.setAccrual(moneyTransfer.getAccrual());
+            String date = DateTimeFormatter.ofPattern("d MMMM yyyy")
+                    .withLocale(new Locale("ru"))
+                    .format((moneyTransfer.getDateOfTransfer()));
+            moneyTransferDto.setDate(date);
+            moneyTransferDtoList.add(moneyTransferDto);
+        }
+        return new ResponseEntity<>(moneyTransferDtoList, HttpStatus.OK);
+    }
+
+    public ResponseEntity<List<UserStatDto>> getUserStat() {
+        List<UserRegistration> userRegistrationsList = userRegistrationRepository.findAll();
+        List<UserStatDto> userStatDtoList = new ArrayList<>();
+        for (UserRegistration userRegistration : userRegistrationsList) {
+            UserStatDto userStatDto = new UserStatDto();
+            userStatDto.setUser_uid(userRegistration.getUser_uid().toString());
+            userStatDto.setRegisterDate(userRegistration.getDateOfRegistration());
+            String date = DateTimeFormatter.ofPattern("d MMMM yyyy")
+                    .withLocale(new Locale("ru"))
+                    .format((userRegistration.getDateOfRegistration()));
+            userStatDto.setStringRegisterDate(date);
+            userStatDtoList.add(userStatDto);
+        }
+        return new ResponseEntity<>(userStatDtoList, HttpStatus.OK);
     }
 }

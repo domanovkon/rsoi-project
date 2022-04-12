@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @CrossOrigin("https://localhost:8080/api/v1")
 @RequestMapping("api/v1")
@@ -48,5 +50,15 @@ public class GatewayController {
     @PostMapping("/user-reg")
     public ResponseEntity<Object> addUserRegistrationStat(@RequestHeader("jwt") String jwt) {
         return gatewayService.addUserRegistrationStat(jwt);
+    }
+
+    @GetMapping("/transfer")
+    public ResponseEntity<List<MoneyTransferDto>> getMoneyTransfer(@RequestHeader("jwt") String jwt) {
+        return gatewayService.getMoneyTransfer(jwt);
+    }
+
+    @GetMapping("/user-stat")
+    public ResponseEntity<List<UserStatDto>> getUserStat(@RequestHeader("jwt") String jwt) {
+        return gatewayService.getUserStat(jwt);
     }
 }

@@ -1,9 +1,6 @@
 package com.domanov.sessionservice.service;
 
-import com.domanov.sessionservice.dto.AuthResponse;
-import com.domanov.sessionservice.dto.RegistrationRequest;
-import com.domanov.sessionservice.dto.UserResponse;
-import com.domanov.sessionservice.dto.ValidateToken;
+import com.domanov.sessionservice.dto.*;
 import com.domanov.sessionservice.model.Role;
 import com.domanov.sessionservice.model.User;
 import com.domanov.sessionservice.repository.UserRepository;
@@ -14,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Service("SessionService")
@@ -49,6 +48,7 @@ public class SessionService {
         user.setSurname(registrationRequest.getSurname());
         user.setRole(Role.USER);
         user.setUser_uid(UUID.randomUUID());
+        user.setDarkTheme(false);
         userRepository.save(user);
 
         UserResponse userResponse = new UserResponse();
@@ -105,5 +105,16 @@ public class SessionService {
             userRepository.save(user);
         }
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    public List<UserStatDto> getUserStat(List<UserStatDto> userStatDtoList) {
+        List<UserStatDto> us = new ArrayList<>();
+        for (UserStatDto userStatDto : userStatDtoList) {
+            User user = userRepository.findByUuid(UUID.fromString(userStatDto.getUser_uid()));
+            userStatDto.setName(user.getName() + " " + user.getSurname());
+            userStatDto.setUsername(user.getLogin());
+            us.add(userStatDto);
+        }
+        return us;
     }
 }

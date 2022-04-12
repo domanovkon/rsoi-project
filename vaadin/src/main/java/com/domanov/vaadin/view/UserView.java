@@ -222,7 +222,7 @@ public class UserView extends VerticalLayout {
         EmailField validEmailField = new EmailField();
         validEmailField.setLabel("Email*");
         validEmailField.getElement().setAttribute("name", "email");
-        validEmailField.setErrorMessage("Введите правильный email");
+        validEmailField.setErrorMessage("Введите корректный email");
         validEmailField.setMaxLength(100);
         validEmailField.setClearButtonVisible(true);
 
@@ -264,6 +264,16 @@ public class UserView extends VerticalLayout {
         Button addButton = new Button("Добавить", buttonClickEvent -> {
             if (name.getValue().trim().isEmpty()) {
                 Notification.show("Введите имя");
+            } else if (type.getValue() == null || type.getValue().trim().isEmpty()) {
+                Notification.show("Выберите тип музея");
+            } else if (city.getValue().trim().isEmpty() || street.getValue().trim().isEmpty() || house.getValue().trim().isEmpty()) {
+                Notification.show("Введите адрес");
+            } else if (validEmailField.getValue().trim().isEmpty() || validEmailField.isInvalid()) {
+                Notification.show("Введите корректный email");
+            } else if (inn.isInvalid()) {
+                Notification.show("Введите корректный ИНН");
+            } else if (ogrn.isInvalid()) {
+                Notification.show("Введите корректный ОГРН");
             } else {
 //            try {
 //                TicketBuyRequest ticketBuyRequest = new TicketBuyRequest();

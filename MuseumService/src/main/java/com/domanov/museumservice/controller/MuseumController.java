@@ -44,4 +44,10 @@ public class MuseumController {
     public List<MoneyTransferDto> getMoneyTransfer(@RequestBody List<MoneyTransferDto> moneyTransferDtoList) {
         return museumService.getMoneyTransfer(moneyTransferDtoList);
     }
+
+    @GetMapping("/types")
+    @CrossOrigin(origins = "*")
+    public List<MyseumTypeDto> getMuseumTypes() {
+        return museumService.getMuseumTypes();
+    }
 }

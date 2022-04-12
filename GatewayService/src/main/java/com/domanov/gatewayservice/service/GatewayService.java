@@ -161,4 +161,16 @@ public class GatewayService {
             return new ResponseEntity<>(new ArrayList<>(), HttpStatus.SERVICE_UNAVAILABLE);
         }
     }
+
+    public ResponseEntity<List<MyseumTypeDto>> getMuseumTypes(String jwt) {
+        try {
+            ValidateToken validateToken = sessionClient.validate(jwt);
+            if (validateToken.getLogin() != null) {
+                return new ResponseEntity<>(museumClient.getMuseumTypes(), HttpStatus.OK);
+            }
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.SERVICE_UNAVAILABLE);
+        }
+    }
 }

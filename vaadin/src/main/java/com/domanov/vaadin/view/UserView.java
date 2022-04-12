@@ -5,12 +5,23 @@ import com.domanov.vaadin.service.VaadinService;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.*;
+import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.select.Select;
+import com.vaadin.flow.component.textfield.EmailField;
+import com.vaadin.flow.component.textfield.IntegerField;
+import com.vaadin.flow.component.textfield.TextArea;
+import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.validator.RegexpValidator;
+import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.dom.ThemeList;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -22,6 +33,7 @@ import org.springframework.http.ResponseEntity;
 
 import javax.annotation.PostConstruct;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Route(value = "user", layout = MainLayout.class)
@@ -107,7 +119,11 @@ public class UserView extends VerticalLayout {
                     horizontalLayout.add(ticketHistory);
                 }
             } else if (userResponse.getRole().equals("ADMIN")) {
-                Button addMuseumButton = new Button("Добавить музей");
+                Dialog dialog = new Dialog();
+                VerticalLayout dialogLayout = createDialogLayout(dialog);
+                dialog.add(dialogLayout);
+                Button addMuseumButton = new Button("Добавить музей", e -> dialog.open());
+                dialog.add(dialogLayout);
                 profile.add(addMuseumButton);
                 H3 transferTitle = new H3("Поступления на счет музеев");
                 transferTitle.getStyle().set("margin-bottom", "-8px").set("margin-top", "14px");
@@ -162,5 +178,119 @@ public class UserView extends VerticalLayout {
             Notification.show("Что-то пошло не так");
         }
 
+    }
+
+    public VerticalLayout createDialogLayout(Dialog dialog) {
+        H3 headline = new H3("Добавление музея");
+        headline.getStyle().set("margin", "var(--lumo-space-m) 0 0 0")
+                .set("font-size", "1.5em").set("font-weight", "bold");
+
+        TextField name = new TextField("Название*");
+        name.setClearButtonVisible(true);
+        name.setMaxLength(80);
+
+        TextArea desc = new TextArea("Описание");
+        desc.setMaxLength(600);
+        desc.setClearButtonVisible(true);
+        desc.setValueChangeMode(ValueChangeMode.EAGER);
+        desc.addValueChangeListener(e -> {
+            e.getSource().setHelperText(e.getValue().length() + "/" + 600);
+        });
+
+        TextField city = new TextField();
+        city.setLabel("Город*");
+        city.setMaxLength(50);
+        city.setClearButtonVisible(true);
+        city.setPrefixComponent(VaadinIcon.MAP_MARKER.create());
+
+        TextField street = new TextField();
+        street.setLabel("Улица*");
+        street.setMaxLength(50);
+        street.setClearButtonVisible(true);
+        street.setPrefixComponent(VaadinIcon.MAP_MARKER.create());
+
+        TextField house = new TextField();
+        house.setLabel("Дом*");
+        house.setMaxLength(50);
+        house.setClearButtonVisible(true);
+        house.setPrefixComponent(VaadinIcon.MAP_MARKER.create());
+
+        Select<String> type = new Select<>();
+        type.setLabel("Тип музея*");
+        List<String> typesName = new ArrayList<>();
+
+        EmailField validEmailField = new EmailField();
+        validEmailField.setLabel("Email*");
+        validEmailField.getElement().setAttribute("name", "email");
+        validEmailField.setErrorMessage("Введите правильный email");
+        validEmailField.setMaxLength(100);
+        validEmailField.setClearButtonVisible(true);
+
+        TextField leggalEntityName = new TextField("Наименование ЮЛ");
+        leggalEntityName.setClearButtonVisible(true);
+        leggalEntityName.setMaxLength(100);
+
+        TextField inn = new TextField("ИНН");
+        inn.setClearButtonVisible(true);
+        inn.setMaxLength(12);
+        inn.setPattern("[0-9]{12}|^$");
+        inn.setErrorMessage("ИНН состоит из 12 цифр");
+
+        TextField ogrn = new TextField("ОГРН");
+        ogrn.setClearButtonVisible(true);
+        ogrn.setMaxLength(13);
+        ogrn.setPattern("[0-9]{13}|^$");
+        ogrn.setErrorMessage("ОГРН состоит из 13 цифр");
+
+        try {
+            ResponseEntity<List<MyseumTypeDto>> museumTypes = vaadinService.getMuseumTypes();
+            for (MyseumTypeDto myseumTypeDto : museumTypes.getBody()) {
+                typesName.add(myseumTypeDto.getType());
+            }
+        } catch (Exception e) {
+            dialog.close();
+            Notification.show("Что-то пошло не так");
+        }
+        type.setItems(typesName);
+
+
+        VerticalLayout fieldLayout = new VerticalLayout(name, desc, type, city,
+                street, house, validEmailField, leggalEntityName, inn, ogrn);
+        fieldLayout.setSpacing(false);
+        fieldLayout.setPadding(false);
+        fieldLayout.setAlignItems(FlexComponent.Alignment.STRETCH);
+
+        Button cancelButton = new Button("Отмена", e -> dialog.close());
+        Button addButton = new Button("Добавить", buttonClickEvent -> {
+            if (name.getValue().trim().isEmpty()) {
+                Notification.show("Введите имя");
+            } else {
+//            try {
+//                TicketBuyRequest ticketBuyRequest = new TicketBuyRequest();
+//                ticketBuyRequest.setShow_uid(show_uid);
+//                ticketBuyRequest.setAmount(integerField.getValue());
+//                ticketBuyRequest.setPrice(price);
+//                ResponseEntity<Object> response = vaadinService.buyTicket(ticketBuyRequest);
+//                if (response.getStatusCode().equals(HttpStatus.OK)) {
+//                    Notification.show("Билеты успешно приобретены!");
+//                }
+//            } catch (Exception e) {
+//                Notification.show("Что-то пошло не так");
+//            }
+                dialog.close();
+            }
+        });
+        addButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        HorizontalLayout buttonLayout = new HorizontalLayout(cancelButton,
+                addButton);
+        buttonLayout
+                .setJustifyContentMode(FlexComponent.JustifyContentMode.END);
+
+        VerticalLayout dialogLayout = new VerticalLayout(headline, fieldLayout,
+                buttonLayout);
+        dialogLayout.setPadding(false);
+        dialogLayout.setAlignItems(FlexComponent.Alignment.STRETCH);
+        dialogLayout.getStyle().set("width", "500px").set("max-width", "100%");
+        return dialogLayout;
     }
 }

@@ -2,8 +2,10 @@ package com.domanov.museumservice.service;
 
 import com.domanov.museumservice.dto.*;
 import com.domanov.museumservice.model.Museum;
+import com.domanov.museumservice.model.MuseumType;
 import com.domanov.museumservice.model.Show;
 import com.domanov.museumservice.repository.MuseumRepository;
+import com.domanov.museumservice.repository.MuseumTypeRepository;
 import com.domanov.museumservice.repository.ShowRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -25,6 +27,9 @@ public class MuseumService {
 
     @Autowired
     private ShowRepository showRepository;
+
+    @Autowired
+    private MuseumTypeRepository museumTypeRepository;
 
     public MuseumPageResponse getMuseums (int page, int size) {
         Pageable pageable = PageRequest.of(page - 1, size);
@@ -127,5 +132,20 @@ public class MuseumService {
             moneyTransferDtos.add(moneyTransferDto);
         }
         return moneyTransferDtos;
+    }
+
+    public List<MyseumTypeDto> getMuseumTypes() {
+        List<MyseumTypeDto> myseumTypeDtos = new ArrayList<>();
+        List<MuseumType> museumTypes = museumTypeRepository.findAll();
+        for (MuseumType museumType : museumTypes) {
+            MyseumTypeDto myseumTypeDto = new MyseumTypeDto();
+            myseumTypeDto.setId(museumType.getId());
+            myseumTypeDto.setType(museumType.getType());
+            myseumTypeDtos.add(myseumTypeDto);
+        }
+        myseumTypeDtos = myseumTypeDtos.stream()
+                .sorted(Comparator.comparing(MyseumTypeDto::getId))
+                .collect(Collectors.toList());
+        return myseumTypeDtos;
     }
 }

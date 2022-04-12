@@ -61,4 +61,9 @@ public class GatewayController {
     public ResponseEntity<List<UserStatDto>> getUserStat(@RequestHeader("jwt") String jwt) {
         return gatewayService.getUserStat(jwt);
     }
+
+    @GetMapping("/types")
+    public ResponseEntity<List<MyseumTypeDto>> getMuseumTypes(@RequestHeader("jwt") String jwt) {
+        return gatewayService.getMuseumTypes(jwt);
+    }
 }

@@ -36,4 +36,7 @@ public interface GatewayClient {
 
     @RequestMapping(method = RequestMethod.GET, value = "/user-stat")
     ResponseEntity<List<UserStatDto>> getUserStat(@RequestHeader("jwt") String jwt);
+
+    @RequestMapping(method = RequestMethod.GET, value = "/types")
+    ResponseEntity<List<MyseumTypeDto>> getMuseumTypes(@RequestHeader("jwt") String jwt);
 }

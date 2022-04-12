@@ -24,4 +24,7 @@ public interface MuseumClient {
 
     @RequestMapping(method = RequestMethod.PUT, value = "/transfer")
     List<MoneyTransferDto> getMoneyTransfer(@RequestBody List<MoneyTransferDto> moneyTransferDtoList);
+
+    @RequestMapping(method = RequestMethod.GET, value = "/types")
+    List<MyseumTypeDto> getMuseumTypes();
 }

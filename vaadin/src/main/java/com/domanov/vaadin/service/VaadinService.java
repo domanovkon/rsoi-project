@@ -144,4 +144,12 @@ public class VaadinService {
             return new ResponseEntity<>(new ArrayList<>(), HttpStatus.SERVICE_UNAVAILABLE);
         }
     }
+
+    public ResponseEntity<List<MyseumTypeDto>> getMuseumTypes() {
+        try {
+            return gatewayClient.getMuseumTypes(getJWT());
+        } catch (Exception e) {
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.SERVICE_UNAVAILABLE);
+        }
+    }
 }

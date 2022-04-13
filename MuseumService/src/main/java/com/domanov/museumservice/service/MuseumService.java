@@ -1,6 +1,7 @@
 package com.domanov.museumservice.service;
 
 import com.domanov.museumservice.dto.*;
+import com.domanov.museumservice.model.Address;
 import com.domanov.museumservice.model.Museum;
 import com.domanov.museumservice.model.MuseumType;
 import com.domanov.museumservice.model.Show;
@@ -113,6 +114,9 @@ public class MuseumService {
         for (TicketDto ticketDto : ticketListDto.getTicketList()) {
             TicketDto ticketDto1 = new TicketDto();
             Show show = showRepository.findShowByShowUid(UUID.fromString(ticketDto.getShow_uid()));
+            if (show == null) {
+                continue;
+            }
             ticketDto1.setShowName(show.getName());
             ticketDto1.setMuseumName(show.getMuseum().getName());
             ticketDto1.setPrice(ticketDto.getPrice());
@@ -147,5 +151,61 @@ public class MuseumService {
                 .sorted(Comparator.comparing(MyseumTypeDto::getId))
                 .collect(Collectors.toList());
         return myseumTypeDtos;
+    }
+
+    public ResponseEntity<MuseumInfoResponse> createMuseum(MuseumInfoResponse museumInfoResponse) {
+        Address address = new Address();
+        address.setCity(museumInfoResponse.getAddress().getCity());
+        address.setStreet(museumInfoResponse.getAddress().getStreet());
+        address.setHouse(museumInfoResponse.getAddress().getHouse());
+        Museum museum = new Museum();
+        museum.setName(museumInfoResponse.getName());
+        museum.setDescription(museumInfoResponse.getDescription());
+        museum.setEmail(museumInfoResponse.getEmail());
+        museum.setAddress(address);
+        MuseumType museumType = museumTypeRepository.findShowByTypeName(museumInfoResponse.getType());
+        museum.setMuseumType(museumType);
+        museum.setInn(museumInfoResponse.getInn());
+        museum.setOgrn(museumInfoResponse.getOgrn());
+        UUID museum_uid = UUID.randomUUID();
+        museum.setMuseum_uid(museum_uid);
+        museum.setLegalEntityName(museumInfoResponse.getLegalEntityName());
+        museum.setAccount(0);
+        museumRepository.save(museum);
+        museumInfoResponse.setMuseum_uid(museum_uid.toString());
+        return new ResponseEntity<>(museumInfoResponse, HttpStatus.CREATED);
+    }
+
+    public ResponseEntity<Object> removeShow(String uid) {
+        Show show = showRepository.findShowByShowUid(UUID.fromString(uid));
+        showRepository.delete(show);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    public ResponseEntity<Object> removeMuseum(String uid) {
+        Museum museum = museumRepository.findByUid(UUID.fromString(uid));
+        List<Show> shows = showRepository.findAllShowInMuseum(museum);
+        for (Show show : shows) {
+            showRepository.delete(show);
+        }
+        museumRepository.delete(museum);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    public ResponseEntity<ShowResponse> createShow(ShowResponse showResponse) {
+        Show show = new Show();
+        show.setShow_uid(UUID.randomUUID());
+        show.setName(showResponse.getName());
+        show.setDescription(showResponse.getDescription());
+        show.setPrice(showResponse.getPrice());
+        show.setPermanentExhibition(showResponse.getPermanentExhibition());
+        if (!showResponse.getPermanentExhibition()) {
+            show.setStartDate(showResponse.getStartDate());
+            show.setEndDate(showResponse.getEndDate());
+        }
+        Museum museum = museumRepository.findByUid(UUID.fromString(showResponse.getMuseum_uid()));
+        show.setMuseum(museum);
+        showRepository.save(show);
+        return new ResponseEntity<>(showResponse, HttpStatus.CREATED);
     }
 }

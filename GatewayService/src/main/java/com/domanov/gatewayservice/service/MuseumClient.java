@@ -27,4 +27,16 @@ public interface MuseumClient {
 
     @RequestMapping(method = RequestMethod.GET, value = "/types")
     List<MyseumTypeDto> getMuseumTypes();
+
+    @RequestMapping(method = RequestMethod.POST, value = "/new-museum")
+    ResponseEntity<MuseumInfoResponse> createMuseum(@RequestBody MuseumInfoResponse museumInfoResponse);
+
+    @RequestMapping(method = RequestMethod.DELETE, value = "/show")
+    ResponseEntity<Object> removeShow(@RequestHeader("uid") String uid);
+
+    @RequestMapping(method = RequestMethod.DELETE, value = "/museum")
+    ResponseEntity<Object> removeMuseum(@RequestHeader("uid") String uid);
+
+    @RequestMapping(method = RequestMethod.POST, value = "/show")
+    ResponseEntity<ShowResponse> createShow(@RequestBody ShowResponse showResponse);
 }

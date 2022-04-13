@@ -275,18 +275,28 @@ public class UserView extends VerticalLayout {
             } else if (ogrn.isInvalid()) {
                 Notification.show("Введите корректный ОГРН");
             } else {
-//            try {
-//                TicketBuyRequest ticketBuyRequest = new TicketBuyRequest();
-//                ticketBuyRequest.setShow_uid(show_uid);
-//                ticketBuyRequest.setAmount(integerField.getValue());
-//                ticketBuyRequest.setPrice(price);
-//                ResponseEntity<Object> response = vaadinService.buyTicket(ticketBuyRequest);
-//                if (response.getStatusCode().equals(HttpStatus.OK)) {
-//                    Notification.show("Билеты успешно приобретены!");
-//                }
-//            } catch (Exception e) {
-//                Notification.show("Что-то пошло не так");
-//            }
+                AddressResponse addressResponse = new AddressResponse();
+                addressResponse.setCity(city.getValue());
+                addressResponse.setStreet(street.getValue());
+                addressResponse.setHouse(house.getValue());
+
+                MuseumInfoResponse museumInfoResponse = new MuseumInfoResponse();
+                museumInfoResponse.setName(name.getValue());
+                museumInfoResponse.setDescription(desc.getValue());
+                museumInfoResponse.setEmail(validEmailField.getValue());
+                museumInfoResponse.setAddress(addressResponse);
+                museumInfoResponse.setInn(inn.getValue());
+                museumInfoResponse.setLegalEntityName(leggalEntityName.getValue());
+                museumInfoResponse.setOgrn(ogrn.getValue());
+                museumInfoResponse.setType(type.getValue());
+
+                ResponseEntity<MuseumInfoResponse> responseEntity = vaadinService.createMuseum(museumInfoResponse);
+                if (responseEntity.getStatusCode().equals(HttpStatus.CREATED)) {
+                    UI.getCurrent().navigate("museum/" + responseEntity.getBody().getMuseum_uid());
+                }
+                else {
+                    Notification.show("Что-то пошло не так");
+                }
                 dialog.close();
             }
         });

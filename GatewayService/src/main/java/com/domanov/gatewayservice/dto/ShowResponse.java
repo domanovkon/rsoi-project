@@ -18,6 +18,8 @@ public class ShowResponse {
 
     private Integer price;
 
+    private String museum_uid;
+
     public String getName() {
         return name;
     }
@@ -72,5 +74,13 @@ public class ShowResponse {
 
     public void setPrice(Integer price) {
         this.price = price;
+    }
+
+    public String getMuseum_uid() {
+        return museum_uid;
+    }
+
+    public void setMuseum_uid(String museum_uid) {
+        this.museum_uid = museum_uid;
     }
 }

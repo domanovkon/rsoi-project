@@ -152,4 +152,36 @@ public class VaadinService {
             return new ResponseEntity<>(new ArrayList<>(), HttpStatus.SERVICE_UNAVAILABLE);
         }
     }
+
+    public ResponseEntity<MuseumInfoResponse> createMuseum(MuseumInfoResponse museumInfoResponse) {
+        try {
+            return gatewayClient.createMuseum(getJWT(), museumInfoResponse);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new MuseumInfoResponse(), HttpStatus.SERVICE_UNAVAILABLE);
+        }
+    }
+
+    public ResponseEntity<Object> removeShow(String show_uid) {
+        try {
+            return gatewayClient.removeShow(getJWT(), show_uid);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new MuseumInfoResponse(), HttpStatus.SERVICE_UNAVAILABLE);
+        }
+    }
+
+    public ResponseEntity<Object> removeMuseum(String museum_uid) {
+        try {
+            return gatewayClient.removeMuseum(getJWT(), museum_uid);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new MuseumInfoResponse(), HttpStatus.SERVICE_UNAVAILABLE);
+        }
+    }
+
+    public ResponseEntity<ShowResponse> createShow(ShowResponse showResponse) {
+        try {
+            return gatewayClient.createShow(getJWT(), showResponse);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new ShowResponse(), HttpStatus.SERVICE_UNAVAILABLE);
+        }
+    }
 }

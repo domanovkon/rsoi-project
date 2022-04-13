@@ -50,4 +50,24 @@ public class MuseumController {
     public List<MyseumTypeDto> getMuseumTypes() {
         return museumService.getMuseumTypes();
     }
+
+    @PostMapping("/new-museum")
+    public ResponseEntity<MuseumInfoResponse> createMuseum(@RequestBody MuseumInfoResponse museumInfoResponse) {
+        return museumService.createMuseum(museumInfoResponse);
+    }
+
+    @DeleteMapping("/show")
+    public ResponseEntity<Object> removeShow(@RequestHeader("uid") String uid) {
+        return museumService.removeShow(uid);
+    }
+
+    @DeleteMapping("/museum")
+    public ResponseEntity<Object> removeMuseum(@RequestHeader("uid") String uid) {
+        return museumService.removeMuseum(uid);
+    }
+
+    @PostMapping("/show")
+    public ResponseEntity<ShowResponse> createShow(@RequestBody ShowResponse showResponse) {
+        return museumService.createShow(showResponse);
+    }
 }

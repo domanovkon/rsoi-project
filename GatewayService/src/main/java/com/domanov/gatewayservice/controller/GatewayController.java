@@ -66,4 +66,24 @@ public class GatewayController {
     public ResponseEntity<List<MyseumTypeDto>> getMuseumTypes(@RequestHeader("jwt") String jwt) {
         return gatewayService.getMuseumTypes(jwt);
     }
+
+    @PostMapping("/new-museum")
+    public ResponseEntity<MuseumInfoResponse> createMuseum(@RequestHeader("jwt") String jwt, @RequestBody MuseumInfoResponse museumInfoResponse) {
+        return gatewayService.createMuseum(jwt, museumInfoResponse);
+    }
+
+    @DeleteMapping("/show")
+    public ResponseEntity<Object> removeShow(@RequestHeader("jwt") String jwt, @RequestHeader("uid") String uid) {
+        return gatewayService.removeShow(jwt, uid);
+    }
+
+    @DeleteMapping("/museum")
+    public ResponseEntity<Object> removeMuseum(@RequestHeader("jwt") String jwt, @RequestHeader("uid") String uid) {
+        return gatewayService.removeMuseum(jwt, uid);
+    }
+
+    @PostMapping("/show")
+    public ResponseEntity<ShowResponse> createShow(@RequestHeader("jwt") String jwt, @RequestBody ShowResponse showResponse) {
+        return gatewayService.createShow(jwt, showResponse);
+    }
 }

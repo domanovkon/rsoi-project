@@ -39,4 +39,16 @@ public interface GatewayClient {
 
     @RequestMapping(method = RequestMethod.GET, value = "/types")
     ResponseEntity<List<MyseumTypeDto>> getMuseumTypes(@RequestHeader("jwt") String jwt);
+
+    @RequestMapping(method = RequestMethod.POST, value = "/new-museum")
+    ResponseEntity<MuseumInfoResponse> createMuseum(@RequestHeader("jwt") String jwt, @RequestBody MuseumInfoResponse museumInfoResponse);
+
+    @RequestMapping(method = RequestMethod.DELETE, value = "/show")
+    ResponseEntity<Object> removeShow(@RequestHeader("jwt") String jwt, @RequestHeader("uid") String uid);
+
+    @RequestMapping(method = RequestMethod.DELETE, value = "/museum")
+    ResponseEntity<Object> removeMuseum(@RequestHeader("jwt") String jwt, @RequestHeader("uid") String uid);
+
+    @RequestMapping(method = RequestMethod.POST, value = "/show")
+    ResponseEntity<ShowResponse> createShow(@RequestHeader("jwt") String jwt, @RequestBody ShowResponse showResponse);
 }

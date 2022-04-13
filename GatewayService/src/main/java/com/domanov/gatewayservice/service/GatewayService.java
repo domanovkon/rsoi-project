@@ -173,4 +173,52 @@ public class GatewayService {
             return new ResponseEntity<>(new ArrayList<>(), HttpStatus.SERVICE_UNAVAILABLE);
         }
     }
+
+    public ResponseEntity<MuseumInfoResponse> createMuseum(String jwt, MuseumInfoResponse museumInfoResponse) {
+        try {
+            ValidateToken validateToken = sessionClient.validate(jwt);
+            if (validateToken.getLogin() != null) {
+                return museumClient.createMuseum(museumInfoResponse);
+            }
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new MuseumInfoResponse(), HttpStatus.SERVICE_UNAVAILABLE);
+        }
+    }
+
+    public ResponseEntity<Object> removeShow(String jwt, String uid) {
+        try {
+            ValidateToken validateToken = sessionClient.validate(jwt);
+            if (validateToken.getLogin() != null) {
+                return museumClient.removeShow(uid);
+            }
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new MuseumInfoResponse(), HttpStatus.SERVICE_UNAVAILABLE);
+        }
+    }
+
+    public ResponseEntity<Object> removeMuseum(String jwt, String uid) {
+        try {
+            ValidateToken validateToken = sessionClient.validate(jwt);
+            if (validateToken.getLogin() != null) {
+                return museumClient.removeMuseum(uid);
+            }
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new MuseumInfoResponse(), HttpStatus.SERVICE_UNAVAILABLE);
+        }
+    }
+
+    public ResponseEntity<ShowResponse> createShow(String jwt, ShowResponse showResponse) {
+        try {
+            ValidateToken validateToken = sessionClient.validate(jwt);
+            if (validateToken.getLogin() != null) {
+                return museumClient.createShow(showResponse);
+            }
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new ShowResponse(), HttpStatus.SERVICE_UNAVAILABLE);
+        }
+    }
 }

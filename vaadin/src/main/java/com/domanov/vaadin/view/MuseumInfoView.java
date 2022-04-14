@@ -13,10 +13,13 @@ import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.details.Details;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.*;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.select.Select;
+import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
@@ -32,6 +35,7 @@ import org.springframework.http.ResponseEntity;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -80,7 +84,10 @@ public class MuseumInfoView extends VerticalLayout implements HasUrlParameter<St
                     showList.setVisible(false);
                 }
 
-                Button changeMuseumButton = new Button("Изменить");
+                Dialog changeDialog = new Dialog();
+                VerticalLayout changeDialogLayout = changeDialogLayout(changeDialog, museum);
+                changeDialog.add(changeDialogLayout);
+                Button changeMuseumButton = new Button("Изменить", e -> changeDialog.open());
                 changeMuseumButton.setHeight("32px");
                 changeMuseumButton.setWidth("103px");
 
@@ -170,9 +177,9 @@ public class MuseumInfoView extends VerticalLayout implements HasUrlParameter<St
         Button removeShowButton = new Button("Удалить", e -> {
             ResponseEntity<Object> responseEntity = vaadinService.removeShow(showResponse.getShow_uid());
             if (responseEntity.getStatusCode().equals(HttpStatus.OK)) {
+                UI.getCurrent().navigate(MuseumView.class);
+                UI.getCurrent().navigate("museum/" + museum_uid);
                 Notification.show("Выставка успешно удалена");
-                UI.getCurrent().getPage().reload();
-//                UI.getCurrent().navigate(MuseumInfoView.class);
             } else {
                 Notification.show("Что-то пошло не так");
             }
@@ -343,15 +350,157 @@ public class MuseumInfoView extends VerticalLayout implements HasUrlParameter<St
                 showResponse.setMuseum_uid(museum_uid);
                 ResponseEntity<ShowResponse> responseEntity = vaadinService.createShow(showResponse);
                 if (responseEntity.getStatusCode().equals(HttpStatus.CREATED)) {
+                    UI.getCurrent().navigate(MuseumView.class);
+                    UI.getCurrent().navigate("museum/" + museum_uid);
                     Notification.show("Выставка успешно добавлена");
-//                    UI.getCurrent().navigate();
-                    UI.getCurrent().getPage().reload();
-//                    UI.getCurrent().navigate(MuseumInfoView.class);
-//                    shows.add(responseEntity.getBody());
-//                    showList.setItems(shows);
-//                    showList.setRenderer(showCardRenderer);
                     showList.setVisible(true);
                 } else {
+                    Notification.show("Что-то пошло не так");
+                }
+                dialog.close();
+            }
+        });
+        addButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        HorizontalLayout buttonLayout = new HorizontalLayout(cancelButton,
+                addButton);
+        buttonLayout
+                .setJustifyContentMode(FlexComponent.JustifyContentMode.END);
+
+        VerticalLayout dialogLayout = new VerticalLayout(headline, fieldLayout,
+                buttonLayout);
+        dialogLayout.setPadding(false);
+        dialogLayout.setAlignItems(FlexComponent.Alignment.STRETCH);
+        dialogLayout.getStyle().set("width", "500px").set("max-width", "100%");
+        return dialogLayout;
+    }
+
+    public VerticalLayout changeDialogLayout(Dialog dialog, MuseumInfoResponse museum) {
+        H3 headline = new H3("Добавление музея");
+        headline.getStyle().set("margin", "var(--lumo-space-m) 0 0 0")
+                .set("font-size", "1.5em").set("font-weight", "bold");
+
+        TextField name = new TextField("Название*");
+        name.setClearButtonVisible(true);
+        name.setMaxLength(80);
+        name.setValue(museum.getName());
+
+        TextArea desc = new TextArea("Описание");
+        desc.setMaxLength(600);
+        desc.setClearButtonVisible(true);
+        desc.setValue(museum.getDescription());
+        desc.setValueChangeMode(ValueChangeMode.EAGER);
+        desc.addValueChangeListener(e -> {
+            e.getSource().setHelperText(e.getValue().length() + "/" + 600);
+        });
+
+        TextField city = new TextField();
+        city.setLabel("Город*");
+        city.setMaxLength(50);
+        city.setValue(museum.getAddress().getCity());
+        city.setClearButtonVisible(true);
+        city.setPrefixComponent(VaadinIcon.MAP_MARKER.create());
+
+        TextField street = new TextField();
+        street.setLabel("Улица*");
+        street.setMaxLength(50);
+        street.setValue(museum.getAddress().getStreet());
+        street.setClearButtonVisible(true);
+        street.setPrefixComponent(VaadinIcon.MAP_MARKER.create());
+
+        TextField house = new TextField();
+        house.setLabel("Дом*");
+        house.setMaxLength(50);
+        house.setValue(museum.getAddress().getHouse());
+        house.setClearButtonVisible(true);
+        house.setPrefixComponent(VaadinIcon.MAP_MARKER.create());
+
+        Select<String> type = new Select<>();
+        type.setLabel("Тип музея*");
+        List<String> typesName = new ArrayList<>();
+
+        EmailField validEmailField = new EmailField();
+        validEmailField.setLabel("Email*");
+        validEmailField.getElement().setAttribute("name", "email");
+        validEmailField.setErrorMessage("Введите корректный email");
+        validEmailField.setMaxLength(100);
+        validEmailField.setValue(museum.getEmail());
+        validEmailField.setClearButtonVisible(true);
+
+        TextField leggalEntityName = new TextField("Наименование ЮЛ");
+        leggalEntityName.setClearButtonVisible(true);
+        leggalEntityName.setValue(museum.getLegalEntityName());
+        leggalEntityName.setMaxLength(100);
+
+        TextField inn = new TextField("ИНН");
+        inn.setClearButtonVisible(true);
+        inn.setValue(museum.getInn());
+        inn.setMaxLength(12);
+        inn.setPattern("[0-9]{12}|^$");
+        inn.setErrorMessage("ИНН состоит из 12 цифр");
+
+        TextField ogrn = new TextField("ОГРН");
+        ogrn.setClearButtonVisible(true);
+        ogrn.setMaxLength(13);
+        ogrn.setValue(museum.getOgrn());
+        ogrn.setPattern("[0-9]{13}|^$");
+        ogrn.setErrorMessage("ОГРН состоит из 13 цифр");
+
+        try {
+            ResponseEntity<List<MyseumTypeDto>> museumTypes = vaadinService.getMuseumTypes();
+            for (MyseumTypeDto myseumTypeDto : museumTypes.getBody()) {
+                typesName.add(myseumTypeDto.getType());
+            }
+        } catch (Exception e) {
+            dialog.close();
+            Notification.show("Что-то пошло не так");
+        }
+        type.setItems(typesName);
+        type.setValue(museum.getType());
+
+
+        VerticalLayout fieldLayout = new VerticalLayout(name, desc, type, city,
+                street, house, validEmailField, leggalEntityName, inn, ogrn);
+        fieldLayout.setSpacing(false);
+        fieldLayout.setPadding(false);
+        fieldLayout.setAlignItems(FlexComponent.Alignment.STRETCH);
+
+        Button cancelButton = new Button("Отмена", e -> dialog.close());
+        Button addButton = new Button("Изменить", buttonClickEvent -> {
+            if (name.getValue().trim().isEmpty()) {
+                Notification.show("Введите имя");
+            } else if (type.getValue() == null || type.getValue().trim().isEmpty()) {
+                Notification.show("Выберите тип музея");
+            } else if (city.getValue().trim().isEmpty() || street.getValue().trim().isEmpty() || house.getValue().trim().isEmpty()) {
+                Notification.show("Введите адрес");
+            } else if (validEmailField.getValue().trim().isEmpty() || validEmailField.isInvalid()) {
+                Notification.show("Введите корректный email");
+            } else if (inn.isInvalid()) {
+                Notification.show("Введите корректный ИНН");
+            } else if (ogrn.isInvalid()) {
+                Notification.show("Введите корректный ОГРН");
+            } else {
+                AddressResponse addressResponse = new AddressResponse();
+                addressResponse.setCity(city.getValue());
+                addressResponse.setStreet(street.getValue());
+                addressResponse.setHouse(house.getValue());
+
+                MuseumInfoResponse museumInfoResponse = new MuseumInfoResponse();
+                museumInfoResponse.setMuseum_uid(museum.getMuseum_uid());
+                museumInfoResponse.setName(name.getValue());
+                museumInfoResponse.setDescription(desc.getValue());
+                museumInfoResponse.setEmail(validEmailField.getValue());
+                museumInfoResponse.setAddress(addressResponse);
+                museumInfoResponse.setInn(inn.getValue());
+                museumInfoResponse.setLegalEntityName(leggalEntityName.getValue());
+                museumInfoResponse.setOgrn(ogrn.getValue());
+                museumInfoResponse.setType(type.getValue());
+
+                ResponseEntity<MuseumInfoResponse> responseEntity = vaadinService.changeMuseum(museumInfoResponse);
+                if (responseEntity.getStatusCode().equals(HttpStatus.OK)) {
+                    UI.getCurrent().navigate(MuseumView.class);
+                    UI.getCurrent().navigate("museum/" + museum_uid);
+                }
+                else {
                     Notification.show("Что-то пошло не так");
                 }
                 dialog.close();

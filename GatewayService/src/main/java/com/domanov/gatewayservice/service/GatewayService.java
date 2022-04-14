@@ -96,7 +96,7 @@ public class GatewayService {
             if (validateToken.getLogin() != null) {
                 UserResponse userResponse = sessionClient.getUser(validateToken.getLogin());
                 ResponseEntity<TicketListDto> ticketHistoryResponse = ticketClient.getTicketHistory(userResponse.getUser_uid().toString());
-                if (ticketHistoryResponse.getStatusCode().equals(HttpStatus.OK) && ticketHistoryResponse.getBody().getTicketList().size() > 0) {
+                if (ticketHistoryResponse.getStatusCode().equals(HttpStatus.OK) && ticketHistoryResponse.getBody().getTicketList() != null && ticketHistoryResponse.getBody().getTicketList().size() > 0) {
                     ResponseEntity<TicketListDto> ticketHistoryListResponse = museumClient.getShowMuseumList(ticketHistoryResponse.getBody());
                     return new ResponseEntity<>(ticketHistoryListResponse.getBody(), HttpStatus.OK);
                 }
@@ -137,6 +137,11 @@ public class GatewayService {
                 ResponseEntity<List<MoneyTransferDto>> response = statisticClient.getMoneyTransfer();
                 if (response.getStatusCode().equals(HttpStatus.OK) && response.getBody().size() > 0) {
                     List<MoneyTransferDto> museumTransferList = museumClient.getMoneyTransfer(response.getBody());
+                    for (MoneyTransferDto moneyTransferDto : museumTransferList) {
+                        if (moneyTransferDto.getMuseumName() == null) {
+                            moneyTransferDto.setMuseumName("[Музей удален]");
+                        }
+                    }
                     return new ResponseEntity<>(museumTransferList, HttpStatus.OK);
                 }
             }
@@ -219,6 +224,18 @@ public class GatewayService {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } catch (Exception e) {
             return new ResponseEntity<>(new ShowResponse(), HttpStatus.SERVICE_UNAVAILABLE);
+        }
+    }
+
+    public ResponseEntity<MuseumInfoResponse> changeMuseum(String jwt, MuseumInfoResponse museumInfoResponse) {
+        try {
+            ValidateToken validateToken = sessionClient.validate(jwt);
+            if (validateToken.getLogin() != null) {
+                return museumClient.changeMuseum(museumInfoResponse);
+            }
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new MuseumInfoResponse(), HttpStatus.SERVICE_UNAVAILABLE);
         }
     }
 }

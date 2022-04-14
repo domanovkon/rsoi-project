@@ -163,7 +163,7 @@ public class MuseumService {
         museum.setDescription(museumInfoResponse.getDescription());
         museum.setEmail(museumInfoResponse.getEmail());
         museum.setAddress(address);
-        MuseumType museumType = museumTypeRepository.findShowByTypeName(museumInfoResponse.getType());
+        MuseumType museumType = museumTypeRepository.findByTypeName(museumInfoResponse.getType());
         museum.setMuseumType(museumType);
         museum.setInn(museumInfoResponse.getInn());
         museum.setOgrn(museumInfoResponse.getOgrn());
@@ -207,5 +207,26 @@ public class MuseumService {
         show.setMuseum(museum);
         showRepository.save(show);
         return new ResponseEntity<>(showResponse, HttpStatus.CREATED);
+    }
+
+    public ResponseEntity<MuseumInfoResponse> changeMuseum(MuseumInfoResponse museumInfoResponse) {
+        Museum museum = museumRepository.findByUid(UUID.fromString(museumInfoResponse.getMuseum_uid()));
+
+        Address address = new Address();
+        address.setCity(museumInfoResponse.getAddress().getCity());
+        address.setStreet(museumInfoResponse.getAddress().getStreet());
+        address.setHouse(museumInfoResponse.getAddress().getHouse());
+        museum.setAddress(address);
+        museum.setName(museumInfoResponse.getName());
+        museum.setDescription(museumInfoResponse.getDescription());
+        museum.setEmail(museumInfoResponse.getEmail());
+
+        MuseumType museumType = museumTypeRepository.findByTypeName(museumInfoResponse.getType());
+        museum.setMuseumType(museumType);
+        museum.setInn(museumInfoResponse.getInn());
+        museum.setOgrn(museumInfoResponse.getOgrn());
+        museum.setLegalEntityName(museumInfoResponse.getLegalEntityName());
+        museumRepository.save(museum);
+        return new ResponseEntity<>(museumInfoResponse, HttpStatus.OK);
     }
 }

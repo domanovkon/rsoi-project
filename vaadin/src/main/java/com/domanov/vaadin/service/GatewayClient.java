@@ -51,4 +51,7 @@ public interface GatewayClient {
 
     @RequestMapping(method = RequestMethod.POST, value = "/show")
     ResponseEntity<ShowResponse> createShow(@RequestHeader("jwt") String jwt, @RequestBody ShowResponse showResponse);
+
+    @RequestMapping(method = RequestMethod.POST, value = "/museum")
+    ResponseEntity<MuseumInfoResponse> changeMuseum(@RequestHeader("jwt") String jwt, @RequestBody MuseumInfoResponse museumInfoResponse);
 }

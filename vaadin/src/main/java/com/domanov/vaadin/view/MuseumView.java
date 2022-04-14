@@ -97,7 +97,6 @@ public class MuseumView extends VerticalLayout {
                         createFilterHeader("Тип", prevMuseumFilter::setType));
                 headerRow.getCell(city).setComponent(
                         createFilterHeader("Город", prevMuseumFilter::setCity));
-//                grid.setItems(prevPageItems);
                 currPage.setText(String.valueOf(currentPageNumber));
             });
             Button nextButton = new Button("Следующая страница", e -> {
@@ -114,7 +113,6 @@ public class MuseumView extends VerticalLayout {
                         createFilterHeader("Тип", nextMuseumFilter::setType));
                 headerRow.getCell(city).setComponent(
                         createFilterHeader("Город", nextMuseumFilter::setCity));
-//                grid.setItems(nextPageItems);
                 currPage.setText(String.valueOf(currentPageNumber));
             });
             HorizontalLayout horizontalLayout = new HorizontalLayout();

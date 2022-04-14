@@ -17,10 +17,8 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.EmailField;
-import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.data.validator.RegexpValidator;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.dom.ThemeList;
 import com.vaadin.flow.router.PageTitle;
@@ -33,7 +31,6 @@ import org.springframework.http.ResponseEntity;
 
 import javax.annotation.PostConstruct;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Route(value = "user", layout = MainLayout.class)
@@ -98,7 +95,7 @@ public class UserView extends VerticalLayout {
                 horizontalLayout.add(profile);
                 ResponseEntity<TicketListDto> ticketHistoryResponse = vaadinService.getTicketHistory();
                 if (ticketHistoryResponse.getStatusCode().equals(HttpStatus.OK)) {
-                    if (ticketHistoryResponse.getBody().getTicketList().size() > 0) {
+                    if (ticketHistoryResponse.getBody() != null && ticketHistoryResponse.getBody().getTicketList().size() > 0) {
                         List<TicketDto> ticketList = ticketHistoryResponse.getBody().getTicketList().stream()
                                 .sorted(Comparator.comparing(TicketDto::getDateTime)).collect(Collectors.toList());
                         Collections.reverse(ticketList);

@@ -70,4 +70,9 @@ public class MuseumController {
     public ResponseEntity<ShowResponse> createShow(@RequestBody ShowResponse showResponse) {
         return museumService.createShow(showResponse);
     }
+
+    @PostMapping("/museum")
+    public ResponseEntity<MuseumInfoResponse> changeMuseum(@RequestBody MuseumInfoResponse museumInfoResponse) {
+        return museumService.changeMuseum(museumInfoResponse);
+    }
 }

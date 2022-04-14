@@ -39,4 +39,7 @@ public interface MuseumClient {
 
     @RequestMapping(method = RequestMethod.POST, value = "/show")
     ResponseEntity<ShowResponse> createShow(@RequestBody ShowResponse showResponse);
+
+    @RequestMapping(method = RequestMethod.POST, value = "/museum")
+    ResponseEntity<MuseumInfoResponse> changeMuseum(@RequestBody MuseumInfoResponse museumInfoResponse);
 }

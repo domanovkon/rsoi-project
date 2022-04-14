@@ -161,6 +161,14 @@ public class VaadinService {
         }
     }
 
+    public ResponseEntity<MuseumInfoResponse> changeMuseum(MuseumInfoResponse museumInfoResponse) {
+        try {
+            return gatewayClient.changeMuseum(getJWT(), museumInfoResponse);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new MuseumInfoResponse(), HttpStatus.SERVICE_UNAVAILABLE);
+        }
+    }
+
     public ResponseEntity<Object> removeShow(String show_uid) {
         try {
             return gatewayClient.removeShow(getJWT(), show_uid);

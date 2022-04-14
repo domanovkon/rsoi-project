@@ -86,4 +86,9 @@ public class GatewayController {
     public ResponseEntity<ShowResponse> createShow(@RequestHeader("jwt") String jwt, @RequestBody ShowResponse showResponse) {
         return gatewayService.createShow(jwt, showResponse);
     }
+
+    @PostMapping("/museum")
+    public ResponseEntity<MuseumInfoResponse> changeMuseum(@RequestHeader("jwt") String jwt, @RequestBody MuseumInfoResponse museumInfoResponse) {
+        return gatewayService.changeMuseum(jwt, museumInfoResponse);
+    }
 }

@@ -254,7 +254,7 @@ public class GatewayService {
     @Component
     public static class TicketStatConsumer extends Thread {
 
-        private StatisticClient statisticClient;
+        private final StatisticClient statisticClient;
 
         @Autowired
         TicketStatConsumer(StatisticClient statisticClient) {

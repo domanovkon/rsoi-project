@@ -4,10 +4,13 @@ import com.domanov.gatewayservice.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 
 @Service("GatewayService")
@@ -24,6 +27,8 @@ public class GatewayService {
 
     @Autowired
     private StatisticClient statisticClient;
+
+    private static BlockingQueue<AddStatRequest> ticketStatQueue = new ArrayBlockingQueue<>(100);
 
     public ResponseEntity<MuseumPageResponse> getMuseums(String jwt, int page, int size) {
         try {
@@ -77,7 +82,14 @@ public class GatewayService {
                     addStatRequest.setPrice(ticketBuyRequest.getPrice());
                     addStatRequest.setAmount(ticketBuyRequest.getAmount());
                     addStatRequest.setTickets(ticketResponse.getBody().getTickets_uid());
-                    ResponseEntity<Object> statResponse = statisticClient.moneyTransfer(addStatRequest);
+                    try {
+                        ResponseEntity<Object> statResponse = statisticClient.moneyTransfer(addStatRequest);
+                    } catch (Exception e) {
+                        ticketStatQueue.add(addStatRequest);
+                        TicketStatConsumer ticketStatConsumer = new TicketStatConsumer(statisticClient);
+                        ticketStatConsumer.start();
+                        return new ResponseEntity<>(HttpStatus.OK);
+                    }
                     return new ResponseEntity<>(HttpStatus.OK);
                 } else {
                     return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
@@ -236,6 +248,34 @@ public class GatewayService {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } catch (Exception e) {
             return new ResponseEntity<>(new MuseumInfoResponse(), HttpStatus.SERVICE_UNAVAILABLE);
+        }
+    }
+
+    @Component
+    public static class TicketStatConsumer extends Thread {
+
+        private StatisticClient statisticClient;
+
+        @Autowired
+        TicketStatConsumer(StatisticClient statisticClient) {
+            this.statisticClient = statisticClient;
+        }
+
+        @Override
+        public void run() {
+            try {
+                while (!GatewayService.ticketStatQueue.isEmpty()) {
+                    Thread.sleep(10000);
+                    AddStatRequest request = ticketStatQueue.take();
+                    try {
+                        ResponseEntity<Object> statResponse = statisticClient.moneyTransfer(request);
+                    } catch (Exception e) {
+                        ticketStatQueue.add(request);
+                    }
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

@@ -268,7 +268,7 @@ public class GatewayService {
                     Thread.sleep(10000);
                     AddStatRequest request = ticketStatQueue.take();
                     try {
-                        ResponseEntity<Object> statResponse = statisticClient.moneyTransfer(request);
+                        statisticClient.moneyTransfer(request);
                     } catch (Exception e) {
                         ticketStatQueue.add(request);
                     }

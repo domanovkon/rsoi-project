@@ -30,6 +30,8 @@ public class GatewayService {
 
     private static BlockingQueue<AddStatRequest> ticketStatQueue = new ArrayBlockingQueue<>(100);
 
+    private static BlockingQueue<String> userStatQueue = new ArrayBlockingQueue<>(100);
+
     public ResponseEntity<MuseumPageResponse> getMuseums(String jwt, int page, int size) {
         try {
             ValidateToken validateToken = sessionClient.validate(jwt);
@@ -137,7 +139,14 @@ public class GatewayService {
     public ResponseEntity<Object> addUserRegistrationStat(String jwt) {
         ResponseEntity<UserResponse> user = this.getUser(jwt);
         if (user.getStatusCode().equals(HttpStatus.OK)) {
-            return statisticClient.addUserRegistrationStat(user.getBody().getUser_uid().toString());
+            try {
+                return statisticClient.addUserRegistrationStat(user.getBody().getUser_uid().toString());
+            } catch (Exception e) {
+                userStatQueue.add(user.getBody().getUser_uid().toString());
+                UserStatConsumer userStatConsumer = new UserStatConsumer(statisticClient);
+                userStatConsumer.start();
+                return new ResponseEntity<>(HttpStatus.OK);
+            }
         }
         return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
     }
@@ -271,6 +280,34 @@ public class GatewayService {
                         statisticClient.moneyTransfer(request);
                     } catch (Exception e) {
                         ticketStatQueue.add(request);
+                    }
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Component
+    public static class UserStatConsumer extends Thread {
+
+        private final StatisticClient statisticClient;
+
+        @Autowired
+        UserStatConsumer(StatisticClient statisticClient) {
+            this.statisticClient = statisticClient;
+        }
+
+        @Override
+        public void run() {
+            try {
+                while (!GatewayService.userStatQueue.isEmpty()) {
+                    Thread.sleep(10000);
+                    String request = userStatQueue.take();
+                    try {
+                        statisticClient.addUserRegistrationStat(request);
+                    } catch (Exception e) {
+                        userStatQueue.add(request);
                     }
                 }
             } catch (InterruptedException e) {

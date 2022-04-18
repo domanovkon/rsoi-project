@@ -1,9 +1,6 @@
 package com.domanov.gatewayservice.service;
 
-import com.domanov.gatewayservice.dto.MoneyTransferDto;
-import com.domanov.gatewayservice.dto.UserResponse;
-import com.domanov.gatewayservice.dto.UserStatDto;
-import com.domanov.gatewayservice.dto.ValidateToken;
+import com.domanov.gatewayservice.dto.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,4 +23,7 @@ public interface SessionClient {
 
     @RequestMapping(method = RequestMethod.PUT, value = "/user-stat")
     List<UserStatDto> getUserStat(@RequestBody List<UserStatDto> userStatDtoList);
+
+    @RequestMapping(method = RequestMethod.GET, value = "/theme")
+    AuthResponse getTheme(@RequestHeader("jwt") String login);
 }

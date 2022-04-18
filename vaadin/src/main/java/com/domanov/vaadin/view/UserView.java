@@ -2,6 +2,7 @@ package com.domanov.vaadin.view;
 
 import com.domanov.vaadin.dto.*;
 import com.domanov.vaadin.service.VaadinService;
+import com.domanov.vaadin.view.login.LoginView;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.button.Button;
@@ -23,6 +24,7 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.dom.ThemeList;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.VaadinRequest;
 import com.vaadin.flow.theme.lumo.Lumo;
 import com.vaadin.flow.component.notification.Notification;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.Cookie;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -86,8 +89,14 @@ public class UserView extends VerticalLayout {
             });
             profile.add(avatar, log, name, themeButton);
             profile.getStyle().set("margin-left", "50px");
+            Button exitButton = new Button("Выход", e -> {
+                UI.getCurrent().getPage().executeJs("document.cookie = 'jwt=;expires=Thu, 01 Jan 1970 00:00:00 GMT'");
+                UI.getCurrent().getPage().reload();
+                UI.getCurrent().navigate(LoginView.class);
+            });
 
             if (userResponse.getRole().equals("USER")) {
+                profile.add(exitButton);
                 H3 historyTitle = new H3("История покупок");
                 ticketHistory.getStyle().set("margin-top", "-32px");
                 ticketHistory.add(historyTitle);
@@ -122,6 +131,7 @@ public class UserView extends VerticalLayout {
                 Button addMuseumButton = new Button("Добавить музей", e -> dialog.open());
                 dialog.add(dialogLayout);
                 profile.add(addMuseumButton);
+                profile.add(exitButton);
                 H3 transferTitle = new H3("Поступления на счет музеев");
                 transferTitle.getStyle().set("margin-bottom", "-8px").set("margin-top", "14px");
                 ticketHistory.getStyle().set("margin-top", "-32px");
@@ -290,8 +300,7 @@ public class UserView extends VerticalLayout {
                 ResponseEntity<MuseumInfoResponse> responseEntity = vaadinService.createMuseum(museumInfoResponse);
                 if (responseEntity.getStatusCode().equals(HttpStatus.CREATED)) {
                     UI.getCurrent().navigate("museum/" + responseEntity.getBody().getMuseum_uid());
-                }
-                else {
+                } else {
                     Notification.show("Что-то пошло не так");
                 }
                 dialog.close();

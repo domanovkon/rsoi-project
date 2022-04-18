@@ -260,6 +260,26 @@ public class GatewayService {
         }
     }
 
+    public ValidateToken validate(String jwt) {
+        try {
+            return sessionClient.validate(jwt);
+        } catch (Exception e) {
+            return new ValidateToken();
+        }
+    }
+
+    public ResponseEntity<AuthResponse> getTheme(String jwt) {
+        try {
+            ValidateToken validateToken = sessionClient.validate(jwt);
+            if (validateToken.getLogin() != null) {
+                return new ResponseEntity<>(sessionClient.getTheme(validateToken.getLogin()), HttpStatus.OK);
+            }
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new AuthResponse(), HttpStatus.SERVICE_UNAVAILABLE);
+        }
+    }
+
     @Component
     public static class TicketStatConsumer extends Thread {
 

@@ -117,4 +117,13 @@ public class SessionService {
         }
         return us;
     }
+
+    public AuthResponse getTheme(String login) {
+        User user = userRepository.findByUsername(login);
+        AuthResponse authResponse = new AuthResponse();
+        if (user != null) {
+            authResponse.setDarkTheme(user.getDarkTheme());
+        }
+        return authResponse;
+    }
 }

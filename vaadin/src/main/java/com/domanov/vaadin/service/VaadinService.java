@@ -1,6 +1,7 @@
 package com.domanov.vaadin.service;
 
 import com.domanov.vaadin.dto.*;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.server.VaadinRequest;
 import com.vaadin.flow.server.VaadinResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,7 @@ public class VaadinService {
                 myCookie.setMaxAge(10 * 60);
                 myCookie.setPath("/");
                 VaadinResponse.getCurrent().addCookie(myCookie);
+//                UI.getCurrent().getPage().executeJs(String.format("document.cookie = '%s=%s;';", "token", authResponse.getJwt()));
                 return response;
             } else {
                 return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
@@ -78,7 +80,7 @@ public class VaadinService {
         }
     }
 
-    private String getJWT() {
+    public String getJWT() {
         StringBuilder jwt = new StringBuilder("Bearer ");
         Cookie[] cookies = VaadinRequest.getCurrent().getCookies();
         for (Cookie cookie : cookies) {
@@ -190,6 +192,30 @@ public class VaadinService {
             return gatewayClient.createShow(getJWT(), showResponse);
         } catch (Exception e) {
             return new ResponseEntity<>(new ShowResponse(), HttpStatus.SERVICE_UNAVAILABLE);
+        }
+    }
+
+    public ValidateToken validate(String jwt) {
+        try {
+            ValidateToken validateToken = gatewayClient.validate(jwt);
+            if (validateToken.getLogin() != null) {
+                return validateToken;
+            }
+            return new ValidateToken();
+        } catch (Exception e) {
+            return new ValidateToken();
+        }
+    }
+
+    public Boolean getTheme() {
+        try {
+            ResponseEntity<AuthResponse> responseEntity = gatewayClient.getTheme(getJWT());
+            if (responseEntity.getStatusCode().equals(HttpStatus.OK) && responseEntity.getBody().getDarkTheme() != null) {
+                return responseEntity.getBody().getDarkTheme();
+            }
+            return false;
+        } catch (Exception e) {
+            return false;
         }
     }
 }

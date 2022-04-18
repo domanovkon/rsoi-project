@@ -54,4 +54,10 @@ public interface GatewayClient {
 
     @RequestMapping(method = RequestMethod.POST, value = "/museum")
     ResponseEntity<MuseumInfoResponse> changeMuseum(@RequestHeader("jwt") String jwt, @RequestBody MuseumInfoResponse museumInfoResponse);
+
+    @RequestMapping(method = RequestMethod.GET, value = "/validate")
+    ValidateToken validate(@RequestHeader("jwt") String jwt);
+
+    @RequestMapping(method = RequestMethod.GET, value = "/theme")
+    ResponseEntity<AuthResponse> getTheme(@RequestHeader("jwt") String jwt);
 }

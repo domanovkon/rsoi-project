@@ -91,4 +91,16 @@ public class GatewayController {
     public ResponseEntity<MuseumInfoResponse> changeMuseum(@RequestHeader("jwt") String jwt, @RequestBody MuseumInfoResponse museumInfoResponse) {
         return gatewayService.changeMuseum(jwt, museumInfoResponse);
     }
+
+    @GetMapping("/validate")
+    @CrossOrigin(origins = "*")
+    public ValidateToken validate(@RequestHeader("jwt") String jwt) {
+        return gatewayService.validate(jwt);
+    }
+
+    @GetMapping("/theme")
+    @CrossOrigin(origins = "*")
+    public ResponseEntity<AuthResponse> getTheme(@RequestHeader("jwt") String jwt) {
+        return gatewayService.getTheme(jwt);
+    }
 }

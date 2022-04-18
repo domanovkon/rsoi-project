@@ -23,10 +23,6 @@ public class MainLayout extends AppLayout {
         Button contactButton = new Button("Контакты", phoneIcon);
         contactButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
 
-        Icon authIcon = new Icon (VaadinIcon.USER);
-        Button authButton = new Button("Войти", authIcon);
-        authButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-
         Icon museumIcon = new Icon(VaadinIcon.INSTITUTION);
         Button museumButton = new Button("Купить билет", museumIcon);
         museumButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
@@ -38,12 +34,10 @@ public class MainLayout extends AppLayout {
         RouterLink mainRouterLink = new RouterLink("", MainView.class);
         RouterLink contactRouterLink = new RouterLink("", ContactView.class);
         RouterLink museumRouterLink = new RouterLink("", MuseumView.class);
-        RouterLink authRouterLink = new RouterLink("", LoginView.class);
         RouterLink lkRouterLink = new RouterLink("", UserView.class);
 
         contactRouterLink.getElement().appendChild(contactButton.getElement());
         mainRouterLink.getElement().appendChild(mainButton.getElement());
-        authRouterLink.getElement().appendChild(authButton.getElement());
         museumRouterLink.getElement().appendChild(museumButton.getElement());
         lkRouterLink.getElement().appendChild(userButton.getElement());
         lkRouterLink.getStyle().set("margin-left", "auto");
@@ -51,7 +45,6 @@ public class MainLayout extends AppLayout {
         addToNavbar(mainRouterLink);
         addToNavbar(museumRouterLink);
         addToNavbar(contactRouterLink);
-        addToNavbar(authRouterLink);
         addToNavbar(lkRouterLink);
     }
 

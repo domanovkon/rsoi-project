@@ -254,6 +254,8 @@ public class MuseumInfoView extends VerticalLayout implements HasUrlParameter<St
                 ResponseEntity<Object> response = vaadinService.buyTicket(ticketBuyRequest);
                 if (response.getStatusCode().equals(HttpStatus.OK)) {
                     Notification.show("Билеты успешно приобретены!");
+                } else {
+                    Notification.show("Что-то пошло не так");
                 }
             } catch (Exception e) {
                 Notification.show("Что-то пошло не так");

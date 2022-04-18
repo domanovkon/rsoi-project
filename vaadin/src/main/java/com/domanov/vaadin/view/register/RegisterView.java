@@ -2,6 +2,7 @@ package com.domanov.vaadin.view.register;
 
 import com.domanov.vaadin.dto.AuthResponse;
 import com.domanov.vaadin.service.VaadinService;
+import com.domanov.vaadin.view.MainView;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H2;
@@ -71,7 +72,9 @@ public class RegisterView extends VerticalLayout {
                 } else {
                     ResponseEntity<AuthResponse> response = vaadinService.registration(username, name, surname, password1);
                     if (response.getStatusCode().equals(HttpStatus.CREATED)) {
-                        UI.getCurrent().navigate("");
+//                        UI.getCurrent().navigate("");
+                        UI.getCurrent().getPage().reload();
+                        UI.getCurrent().navigate(MainView.class);
                     } else if (response.getStatusCode().equals(HttpStatus.SERVICE_UNAVAILABLE)) {
                         Notification.show("Сервис недоступен, попробуйте позже");
                     }

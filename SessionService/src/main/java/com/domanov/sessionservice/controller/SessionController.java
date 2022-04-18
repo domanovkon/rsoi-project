@@ -61,4 +61,10 @@ public class SessionController {
     public List<UserStatDto> getUserStat(@RequestBody List<UserStatDto> userStatDtoList) {
         return sessionService.getUserStat(userStatDtoList);
     }
+
+    @GetMapping("/theme")
+    @CrossOrigin(origins = "*")
+    public AuthResponse getTheme(@RequestHeader("jwt") String login) {
+        return sessionService.getTheme(login);
+    }
 }

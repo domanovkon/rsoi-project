@@ -294,7 +294,7 @@ public class GatewayService {
         public void run() {
             try {
                 while (!GatewayService.ticketStatQueue.isEmpty()) {
-                    Thread.sleep(10000);
+                    Thread.sleep(5000);
                     AddStatRequest request = ticketStatQueue.take();
                     try {
                         statisticClient.moneyTransfer(request);
@@ -322,7 +322,7 @@ public class GatewayService {
         public void run() {
             try {
                 while (!GatewayService.userStatQueue.isEmpty()) {
-                    Thread.sleep(10000);
+                    Thread.sleep(5000);
                     String request = userStatQueue.take();
                     try {
                         statisticClient.addUserRegistrationStat(request);

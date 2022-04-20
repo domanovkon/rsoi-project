@@ -1,0 +1,49 @@
+services:
+  vaadin:
+    build:
+      context: .
+      args:
+        - NODE_ENV=local
+      dockerfile: vaadin/Dockerfile
+    ports:
+      - 3000:3000
+  gateway:
+    build:
+      context: .
+      args:
+        - NODE_ENV=local
+      dockerfile: GatewayService/Dockerfile
+    ports:
+      - 8080:8080
+  museum:
+    build:
+      context: .
+      args:
+        - NODE_ENV=local
+      dockerfile: MuseumService/Dockerfile
+    ports:
+      - 8081:8081
+  session:
+    build:
+      context: .
+      args:
+        - NODE_ENV=local
+      dockerfile: SessionService/Dockerfile
+    ports:
+      - 8084:8084
+  statistic:
+    build:
+      context: .
+      args:
+        - NODE_ENV=local
+      dockerfile: StatisticService/Dockerfile
+    ports:
+      - 8082:8082
+  ticket:
+    build:
+      context: .
+      args:
+        - NODE_ENV=local
+      dockerfile: TicketService/Dockerfile
+    ports:
+      - 8083:8083

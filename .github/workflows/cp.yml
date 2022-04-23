@@ -12,45 +12,45 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-      ticket_db:
-        image: postgres
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: ${spring.datasource.name}
-        ports:
-          - 5432:5432
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+          ticket_db:
+            image: postgres
+            env:
+              POSTGRES_USER: postgres
+              POSTGRES_PASSWORD: postgres
+#              POSTGRES_DB: ticket_db
+            ports:
+              - 5432:5432
+            options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
-#      session_db:
-#        image: postgres
-#        env:
-#          POSTGRES_USER: postgres
-#          POSTGRES_PASSWORD: postgres
-#          POSTGRES_DB: session_db
-#        ports:
-#          - 5432:5432
-#        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
-#
-#      museum_db:
-#        image: postgres
-#        env:
-#          POSTGRES_USER: postgres
-#          POSTGRES_PASSWORD: postgres
-#          POSTGRES_DB: museum_db
-#        ports:
-#          - 5432:5432
-#        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
-#
-#      statistic_db:
-#        image: postgres
-#        env:
-#          POSTGRES_USER: postgres
-#          POSTGRES_PASSWORD: postgres
-#          POSTGRES_DB: statistic_db
-#        ports:
-#          - 5432:5432
-#        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+    #      session_db:
+    #        image: postgres
+    #        env:
+    #          POSTGRES_USER: postgres
+    #          POSTGRES_PASSWORD: postgres
+    #          POSTGRES_DB: session_db
+    #        ports:
+    #          - 5432:5432
+    #        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+    #
+    #      museum_db:
+    #        image: postgres
+    #        env:
+    #          POSTGRES_USER: postgres
+    #          POSTGRES_PASSWORD: postgres
+    #          POSTGRES_DB: museum_db
+    #        ports:
+    #          - 5432:5432
+    #        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+    #
+    #      statistic_db:
+    #        image: postgres
+    #        env:
+    #          POSTGRES_USER: postgres
+    #          POSTGRES_PASSWORD: postgres
+    #          POSTGRES_DB: statistic_db
+    #        ports:
+    #          - 5432:5432
+    #        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
 
     steps:

@@ -12,12 +12,42 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-      postgres:
+      ticket_db:
         image: postgres
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
           POSTGRES_DB: ticket_db
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+      session_db:
+        image: postgres
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: session_db
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+      museum_db:
+        image: postgres
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: museum_db
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+      statistic_db:
+        image: postgres
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: statistic_db
         ports:
           - 5432:5432
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
@@ -37,13 +67,16 @@ jobs:
       - name: Build TicketService
         run: mvn --batch-mode --update-snapshots verify -f TicketService
 
-#      - name: Build MuseumService
-#        run: mvn --batch-mode --update-snapshots verify -f MuseumService
+      - name: Build MuseumService
+        run: mvn --batch-mode --update-snapshots verify -f MuseumService
 
-#      - name: Build SessionService
-#        run: mvn --batch-mode --update-snapshots verify -f SessionService
+      - name: Build SessionService
+        run: mvn --batch-mode --update-snapshots verify -f SessionService
 
-      - name: Sleep for 20s
-        uses: juliangruber/sleep-action@v1
-        with:
-          time: 20s
+      - name: Build StatisticService
+        run: mvn --batch-mode --update-snapshots verify -f StatisticService
+
+#      - name: Sleep for 20s
+#        uses: juliangruber/sleep-action@v1
+#        with:
+#          time: 20s

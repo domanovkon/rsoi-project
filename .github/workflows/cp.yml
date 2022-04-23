@@ -34,7 +34,71 @@ jobs:
       - name: Build StatisticService
         run: mvn --batch-mode --update-snapshots verify -f StatisticService
 
-#      - name: Sleep for 20s
-#        uses: juliangruber/sleep-action@v1
-#        with:
-#          time: 20s
+      - name: Build Vaadin
+        run: mvn --batch-mode --update-snapshots verify -f vaadin
+
+      - name: Build & push Gateway Service image
+        uses: mr-smithers-excellent/docker-build-push@v5
+        with:
+          image: domanovkon/gatewayservice
+          tags: 1.0
+          registry: docker.io
+          directory: GatewayService
+          dockerfile: GatewayService/Dockerfile
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build & push Museum Service image
+        uses: mr-smithers-excellent/docker-build-push@v5
+        with:
+          image: domanovkon/museumservice
+          tags: 1.0
+          registry: docker.io
+          directory: MuseumService
+          dockerfile: MuseumService/Dockerfile
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build & push Session Service image
+        uses: mr-smithers-excellent/docker-build-push@v5
+        with:
+          image: domanovkon/sessionservice
+          tags: 1.0
+          registry: docker.io
+          directory: SessionService
+          dockerfile: SessionService/Dockerfile
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build & push Statistic Service image
+        uses: mr-smithers-excellent/docker-build-push@v5
+        with:
+          image: domanovkon/statisticservice
+          tags: 1.0
+          registry: docker.io
+          directory: StatisticService
+          dockerfile: StatisticService/Dockerfile
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build & push Ticket Service image
+        uses: mr-smithers-excellent/docker-build-push@v5
+        with:
+          image: domanovkon/ticketservice
+          tags: 1.0
+          registry: docker.io
+          directory: TicketService
+          dockerfile: TicketService/Dockerfile
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build & push Vaadin image
+        uses: mr-smithers-excellent/docker-build-push@v5
+        with:
+          image: domanovkon/vaadin
+          tags: 1.0
+          registry: docker.io
+          directory: vaadin
+          dockerfile: vaadin/Dockerfile
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
